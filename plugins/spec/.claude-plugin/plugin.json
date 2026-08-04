@@ -1,0 +1,11 @@
+{
+  "name": "spec",
+  "version": "0.1.0",
+  "description": "Spec-driven development: design specs with a seven-state lifecycle, decomposed into a dependency DAG, driven from idea to shipped.",
+  "author": {
+    "name": "Latere AI",
+    "url": "https://latere.ai"
+  },
+  "homepage": "https://github.com/latere-ai/claude-plugins",
+  "license": "MIT"
+}
