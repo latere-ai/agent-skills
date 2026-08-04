@@ -57,7 +57,7 @@ reaches `complete` because someone checked, not because someone typed it.
 | Skill | What it does |
 | --- | --- |
 | `/spec:create` | Write a new design spec: gather context, explore the code, fill the frontmatter, index it |
-| `/spec:refine` | Bring a drifted spec back in line with what the code actually does now |
+| `/spec:refine` | Bring an out-of-date spec back in line with what the code actually does now |
 | `/spec:validate` | Check the tree against the document model: fields, DAG acyclicity, orphans, dispatch consistency |
 | `/spec:impact` | Blast radius of a proposed change, across both code and other specs |
 | `/spec:breakdown` | Decompose a spec into child design specs or into implementation-ready leaves |
@@ -65,16 +65,16 @@ reaches `complete` because someone checked, not because someone typed it.
 | `/spec:dispatch` | Mark a validated spec ready to build and wire its dependencies |
 | `/spec:implement` | Build a spec: plan, implement each item with tests and docs, commit, finalize |
 | `/spec:review-impl` | Check an implementation against the spec's acceptance criteria |
-| `/spec:diff` | Compare what shipped against what was specced; append the verdict to the spec |
+| `/spec:drift` | Classify how far what shipped diverged from the spec; record the verdict on it |
 | `/spec:wrapup` | Close out a finished spec: Outcome section, status through the testing gate, index update |
-| `/spec:drive` | Orchestrate the whole lifecycle toward a target state, stopping at gates |
-| `/spec:status` | Report across the tree: what is done, in progress, blocked, and actionable |
-| `/spec:housekeeping` | Tidy a drifted flat-numbered tree: stable ids, retire terminal specs, rebuild the index |
+| `/spec:drive` | Run the whole lifecycle toward a target state, stopping at gates. Start here when unsure |
+| `/spec:report` | Survey the tree: what is done, in progress, blocked, and actionable |
+| `/spec:housekeeping` | Tidy an out-of-order flat-numbered tree: stable ids, retire terminal specs, rebuild the index |
 
 ## Working without a server
 
 The skills are file-first: a spec tree is markdown and git, and every skill
-works with nothing else. Three skills — `dispatch`, `drive`, and `diff` — can
+works with nothing else. Three skills — `dispatch`, `drive`, and `drift` — can
 additionally drive a task board through an HTTP transition API when one is
 present, which makes lifecycle changes atomic and adds automatic drift
 detection on task completion. [Wallfacer](https://github.com/latere-ai/wallfacer)

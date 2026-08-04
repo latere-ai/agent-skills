@@ -1,6 +1,6 @@
 ---
 name: housekeeping
-description: Tidy a flat-numbered specs/ tree — give every name-only spec a stable NNN id, retire terminal specs into .archive/ keeping their number, fix the cross-references the moves break, and (optionally) rebuild specs/README.md as one clean NNN-ordered index. Use when the specs directory has drifted — unnumbered files at the root, terminal specs still living at the root, or a stale/narrative README that is no longer a clean index. Repo-agnostic.
+description: Repair an out-of-order flat-numbered specs/ tree: give name-only specs a stable NNN id, retire terminal specs into .archive/ keeping their number, fix the cross-references the moves break, and optionally rebuild specs/README.md as a clean NNN-ordered index. Moves files. Applies only to flat-numbered trees, not to track-directory ones.
 argument-hint: [--number-only | --index-only] [target-repo-dir]
 allowed-tools: Read, Grep, Glob, Edit, Write, Agent, Bash(ls *), Bash(git mv *), Bash(git add *), Bash(git restore *), Bash(git commit *), Bash(git status *), Bash(git log *), Bash(git push *), Bash(grep *), Bash(sed *), Bash(awk *), Bash(perl *), Bash(cat *), Bash(wc *), Bash(sort *), Bash(uniq *), Bash(cut *), Bash(basename *)
 ---
