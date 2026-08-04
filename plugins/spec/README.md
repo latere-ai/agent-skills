@@ -14,10 +14,22 @@ turn them into shipped code.
 
 ## The document model
 
-Every spec is a markdown file under `specs/`, grouped into tracks — either
-directories (`specs/<track>/name.md`) or a `track:` frontmatter field on flat
-`specs/NNN-name.md` files. A spec with a same-named sibling directory is a
-non-leaf: its children live inside.
+Every spec is a markdown file under `specs/`. Three things about it are
+independent, and they compose freely:
+
+- **Grouping.** A directory under `specs/` names the spec's track
+  (`specs/local/live-serve.md`); a spec sitting directly under `specs/` carries
+  a `track:` frontmatter field instead.
+- **Ordering.** A directory may prefix its specs with `NNN-` to fix a reading
+  order within that directory. Optional, per-directory, and its own number
+  space — `specs/local/003-…` and `specs/cloud/003-…` do not collide.
+- **Dependencies.** `depends_on` holds repo-root-relative paths forming one DAG
+  across the whole tree, unaffected by how anything is grouped or numbered.
+  Numbers are a reading order, never the dependency order.
+
+So `specs/local/003-live-serve.md` is an ordinary path: grouped and numbered.
+A spec with a same-named sibling directory is a non-leaf; its children live
+inside.
 
 ```yaml
 ---
@@ -69,7 +81,7 @@ reaches `complete` because someone checked, not because someone typed it.
 | `/spec:wrapup` | Close out a finished spec: Outcome section, status through the testing gate, index update |
 | `/spec:drive` | Run the whole lifecycle toward a target state, stopping at gates. Start here when unsure |
 | `/spec:report` | Survey the tree: what is done, in progress, blocked, and actionable |
-| `/spec:housekeeping` | Tidy an out-of-order flat-numbered tree: stable ids, retire terminal specs, rebuild the index |
+| `/spec:housekeeping` | Repair one directory's numbering: stable ids, retire terminal specs keeping their number, rebuild the index |
 
 ## Working without a server
 

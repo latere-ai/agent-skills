@@ -1,34 +1,52 @@
 ---
 name: housekeeping
-description: Repair an out-of-order flat-numbered specs/ tree: give name-only specs a stable NNN id, retire terminal specs into .archive/ keeping their number, fix the cross-references the moves break, and optionally rebuild specs/README.md as a clean NNN-ordered index. Moves files. Applies only to flat-numbered trees, not to track-directory ones.
-argument-hint: [--number-only | --index-only] [target-repo-dir]
+description: Repair the numbering of a specs/ directory: give name-only specs a stable NNN id, retire terminal specs into .archive/ keeping their number, fix the cross-references the moves break, and optionally rebuild the index in number order. Moves files and commits. Operates on one directory at a time, so it works whether specs sit flat under specs/ or inside a track.
+argument-hint: [--number-only | --index-only] [target-dir]
 allowed-tools: Read, Grep, Glob, Edit, Write, Agent, Bash(ls *), Bash(git mv *), Bash(git add *), Bash(git restore *), Bash(git commit *), Bash(git status *), Bash(git log *), Bash(git push *), Bash(grep *), Bash(sed *), Bash(awk *), Bash(perl *), Bash(cat *), Bash(wc *), Bash(sort *), Bash(uniq *), Bash(cut *), Bash(basename *)
 ---
 
 # Specs housekeeping
 
-Bring a `specs/` tree back to one invariant: **every spec is a flat file
-`specs/NNN-name.md` in a single number space; active specs live at the root,
-terminal specs retire to `specs/.archive/` but keep their number so
-`depends_on:` frontmatter still resolves.** Then make `specs/README.md` a clean
-index ordered by number.
+Bring one specs directory back to a single invariant: **every spec in it is
+`NNN-name.md` in that directory's own number space; active specs stay in place,
+terminal specs retire under `.archive/` but keep their number so `depends_on:`
+frontmatter still resolves.** Then rebuild the index for that directory in
+number order.
+
+The scope is a *directory*, not a repo. Numbering is a per-directory reading
+order that composes with track grouping: `specs/local/003-live-serve.md` is
+both grouped and numbered, and `specs/local/003-…` and `specs/cloud/003-…` are
+separate number spaces that do not collide. Whatever moves here, the dependency
+graph is unaffected — `depends_on` paths are repo-root-relative and form one
+DAG across the whole tree, so keeping numbers stable across an archive move is
+what keeps that graph resolving.
 
 `$ARGUMENTS` may contain a mode flag and/or a target directory:
 - default (no flag): do both the numbering pass and the README rebuild.
 - `--number-only`: number + archive + fix references; skip the README rebuild.
 - `--index-only`: rebuild the README index only; assume numbering is already clean.
-- a path: operate on that repo's `specs/` instead of the cwd.
+- a path: operate on that directory — either another repo's `specs/`, or a
+  single track inside one (`specs/local/`).
 
 This skill mutates files, renames with history, and commits. Work on `main` only
 if that is the repo's convention (check `git log`); otherwise branch first.
 
-## Step 0: Confirm the layout applies
+## Step 0: Fix the scope
 
-This skill is for the **flat-numbered** layout (`specs/042-foo.md`, archived
-under `specs/.archive/042-foo.md`). Glob `specs/*.md`. If most specs are
-`NNN-name.md` files, proceed. If specs live under track directories
-(`specs/foundations/foo.md`) with no numbers, STOP and tell the user this skill
-does not apply to their layout.
+Decide which single directory to work on. A path in `$ARGUMENTS` names it
+directly; otherwise use `specs/` itself. Glob that directory's own `*.md`
+(not recursively — sub-directories are separate scopes, and child specs under a
+`<parent>/` folder belong to their parent, not to this number space).
+
+Then read the intent already in that directory:
+- Some or all specs already carry an `NNN-` prefix → it has adopted numbering;
+  proceed to make it consistent.
+- No spec carries one → adopting numbering is a new convention, not a repair.
+  Say so and confirm with the user before renaming anything.
+
+A directory full of track sub-directories and no specs of its own has nothing
+to number. Say which sub-directories are candidates and let the user pick one,
+rather than recursing on your own.
 
 Look at a sibling repo's `specs/README.md` (or lux's, if reachable at
 `../lux/specs/README.md`) as the reference shape for the index: a status-legend
