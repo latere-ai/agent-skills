@@ -6,8 +6,12 @@
 Reusable workflows for coding agents. Install one collection and use the same
 process in Claude Code or Codex.
 
-The first collection, **spec**, turns a change request into a durable design,
-an explicit dependency graph, a tested implementation, and a recorded outcome.
+Two collections are available. **spec** turns a change request into a durable
+design, an explicit dependency graph, a tested implementation, and a recorded
+outcome. **ci** takes finished work the rest of the way: reviewable commits, and
+a release that is only reported as shipped once the pipeline finished and the
+deployed service answered.
+
 The work stays in your repository, where your team can review it with the code.
 
 ## Why use it
@@ -87,6 +91,10 @@ troubleshooting.
 | Collection | What you get | Guide |
 | --- | --- | --- |
 | [spec](plugins/spec) | 14 skills for design, dependency planning, implementation, review, drift detection, and lifecycle reporting | [Usage guide](docs/spec-kit.md) |
+| [ci](plugins/ci) | 2 skills for committing work in reviewable units and releasing it by tag, gated on a green pipeline and verified against the live deployment | [Usage guide](docs/ci-kit.md) |
+
+Install a collection by name: `/plugin install ci@latere-ai` in Claude Code, or
+`python3 scripts/install.py codex ci` for Codex.
 
 ## Contributing
 
