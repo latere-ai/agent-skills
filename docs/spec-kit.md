@@ -107,14 +107,23 @@ to spot.
 
 ## The lifecycle
 
-```text
-vague -> drafted -> validated -> testing -> complete
-  |         |            |          |
-  +---------+------------+----------+-> stale
-
-archived -> drafted
-complete -> archived
+```mermaid
+stateDiagram-v2
+    [*] --> vague
+    vague --> drafted
+    drafted --> validated
+    validated --> testing
+    testing --> complete: acceptable drift
+    testing --> stale: significant drift
+    stale --> drafted: refine
+    complete --> stale: reality changes
+    complete --> archived: retire
+    archived --> drafted: resurrect
 ```
+
+The diagram shows the common delivery and recovery paths. The table below is
+the authoritative state reference; `archive` is also available from other
+non-terminal states when work is intentionally retired.
 
 | State | Meaning | Normal next move |
 | --- | --- | --- |
