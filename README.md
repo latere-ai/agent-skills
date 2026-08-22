@@ -1,16 +1,52 @@
-# Latere AI agent skills
+# Agent skills from Latere AI
 
-Reusable workflows built at [Latere AI](https://latere.ai), packaged from one
-source for Claude Code and Codex.
+[![Validate](https://github.com/latere-ai/agent-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/latere-ai/agent-skills/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/github/license/latere-ai/agent-skills)](LICENSE)
 
-## Install for Claude Code
+Reusable workflows for coding agents. Install one collection and use the same
+process in Claude Code or Codex.
 
-```
+The first collection, **spec**, turns a change request into a durable design,
+an explicit dependency graph, a tested implementation, and a recorded outcome.
+The work stays in your repository, where your team can review it with the code.
+
+## Why use it
+
+Agent chats are useful working memory, but they are a poor system of record.
+This project gives agents a file-based workflow for work that must survive a
+session, cross package boundaries, or be reviewed by other people.
+
+- **Review intent before code:** design, scope, risks, and acceptance criteria
+  live in Markdown.
+- **Make dependencies visible:** `depends_on` forms one directed graph across
+  the spec tree.
+- **Require completion evidence:** a spec passes through a testing verdict
+  before it can become complete.
+- **Keep your repository authoritative:** skills discover local instructions,
+  commands, tests, and documentation conventions.
+- **Avoid harness lock-in:** canonical skill sources are adapted for Claude Code
+  and Codex during installation.
+
+## Quick start
+
+### Claude Code
+
+Add the marketplace and install the collection:
+
+```text
 /plugin marketplace add latere-ai/agent-skills
 /plugin install spec@latere-ai
 ```
 
-## Install for Codex
+Create your first spec:
+
+```text
+/spec:create product/cache-warming Add bounded cache warming so first requests avoid the full load cost
+```
+
+### Codex
+
+Clone the repository and run the installer with Python 3.10 or newer:
 
 ```sh
 git clone https://github.com/latere-ai/agent-skills.git
@@ -18,37 +54,88 @@ cd agent-skills
 python3 scripts/install.py codex spec
 ```
 
-The installer adds namespaced skills such as `$spec-create`, `$spec-implement`,
-and `$spec-drive` to `$CODEX_HOME/skills` (or `~/.codex/skills`) without
-overwriting existing skills. They are available on the next Codex turn.
+Start a new Codex turn, then create your first spec:
+
+```text
+$spec-create product/cache-warming Add bounded cache warming so first requests avoid the full load cost
+```
+
+The installer writes namespaced skills such as `$spec-create`,
+`$spec-implement`, and `$spec-drive` to `$CODEX_HOME/skills`, or
+`~/.codex/skills` when `CODEX_HOME` is unset. It refuses to overwrite existing
+skills.
+
+### Take the spec to completion
+
+Both create commands report the generated spec path. Review that file, then
+give the path to the lifecycle orchestrator:
+
+| Claude Code | Codex |
+| --- | --- |
+| `/spec:drive specs/cache-warming.md` | `$spec-drive specs/cache-warming.md` |
+
+`drive` selects the next legal step based on the spec's status. It can validate,
+break down, implement, review, and wrap up the work. It pauses before outward or
+hard-to-reverse actions.
+
+Read [Using the spec kit](docs/spec-kit.md) for small and large change paths,
+the seven-state lifecycle, team conventions, command reference, and
+troubleshooting.
 
 ## Collections
 
-| Collection | Claude Code | Codex | What it is |
-| --- | --- | --- | --- |
-| [spec](plugins/spec) | `/plugin install spec@latere-ai` | `python3 scripts/install.py codex spec` | Drive design specs through a seven-state lifecycle and a dependency DAG, from idea to verified delivery |
+| Collection | What you get | Guide |
+| --- | --- | --- |
+| [spec](plugins/spec) | 14 skills for design, dependency planning, implementation, review, drift detection, and lifecycle reporting | [Usage guide](docs/spec-kit.md) |
 
-## Layout
+## How the spec workflow fits together
 
+```mermaid
+flowchart TD
+    request[Change request] --> create[Create spec]
+    create --> scope{Scope ready?}
+    scope -- No --> split[Break down design]
+    split --> scope
+    scope -- Yes --> validate[Validate]
+    validate --> implement[Implement]
+    implement --> verdict[Testing verdict]
+    verdict -- Matches intent --> complete[Complete]
+    verdict -- Significant drift --> stale[Stale]
+    stale --> refine[Refine]
+    refine --> validate
 ```
+
+The default workflow only needs Markdown and Git. Repositories with a compatible
+task-board transition API can also dispatch specs as linked tasks, but no server
+is required.
+
+## Project layout
+
+```text
 .claude-plugin/marketplace.json   Claude Code marketplace adapter
-plugins/<name>/
+plugins/<collection>/
   .claude-plugin/plugin.json      Claude Code collection adapter
-  skills/<skill>/SKILL.md         canonical, shared skill source
-  README.md
-scripts/install.py                harness-specific installation adapter
+  skills/<skill>/SKILL.md         canonical shared skill source
+  README.md                       collection reference
+docs/                             task-oriented usage guides
+scripts/install.py                harness installation adapter
+scripts/validate.py               manifest and skill validation
+tests/                            installer, portability, and docs tests
 ```
 
-Harness adapters may namespace commands or omit harness-specific metadata, but
-the workflow instructions stay in the canonical skill source.
+Harness adapters may namespace invocations or omit harness-specific metadata.
+The workflow instructions remain in one canonical source.
 
 ## Contributing
 
-Skills are prose, and prose drifts from the systems it describes. A change that
-states a rule the code enforces should say where that rule lives, so a reader
-can check it. Keep skills repository-agnostic: read conventions off the tree
-being worked on rather than naming a fixed set.
+Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) for
+skill design rules, local checks, and pull-request expectations. By
+participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Use [GitHub Issues](https://github.com/latere-ai/agent-skills/issues) for bugs
+and proposals. Report sensitive vulnerabilities through the process in
+[SECURITY.md](SECURITY.md).
 
 ## License
 
-MIT
+Licensed under the [MIT License](LICENSE).
