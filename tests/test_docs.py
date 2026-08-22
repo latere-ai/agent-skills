@@ -6,9 +6,15 @@ import unittest
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# Each collection under plugins/ and the guide that teaches it.
+GUIDES = {
+    "spec": "docs/spec-kit.md",
+    "ci": "docs/ci-kit.md",
+}
 PUBLIC_DOCS = (
     ROOT / "README.md",
     ROOT / "plugins/spec/README.md",
+    ROOT / "plugins/ci/README.md",
     ROOT / "CONTRIBUTING.md",
     ROOT / "CODE_OF_CONDUCT.md",
     ROOT / "SECURITY.md",
@@ -23,6 +29,13 @@ class OpenSourceProjectTest(unittest.TestCase):
         self.assertTrue((ROOT / ".github/ISSUE_TEMPLATE/bug.yml").is_file())
         self.assertTrue((ROOT / ".github/ISSUE_TEMPLATE/feature.yml").is_file())
         self.assertTrue((ROOT / ".github/PULL_REQUEST_TEMPLATE.md").is_file())
+
+    def test_every_collection_has_a_guide(self) -> None:
+        collections = sorted(p.name for p in (ROOT / "plugins").iterdir() if p.is_dir())
+        self.assertEqual(collections, sorted(GUIDES))
+        for guide in GUIDES.values():
+            with self.subTest(guide=guide):
+                self.assertTrue((ROOT / guide).is_file())
 
     def test_readme_has_status_badges_and_usage_guide(self) -> None:
         readme = (ROOT / "README.md").read_text()
@@ -40,16 +53,25 @@ class OpenSourceProjectTest(unittest.TestCase):
         self.assertIn("```mermaid\nflowchart", guide)
         self.assertIn("```mermaid\nstateDiagram-v2", guide)
 
-    def test_spec_guide_covers_each_installed_skill(self) -> None:
-        guide = (ROOT / "docs/spec-kit.md").read_text()
-        skill_names = sorted(
-            path.name for path in (ROOT / "plugins/spec/skills").iterdir() if path.is_dir()
-        )
+    def test_each_guide_covers_every_skill_in_its_collection(self) -> None:
+        """A skill missing from its guide is a skill nobody knows to invoke."""
+        for collection, guide_path in GUIDES.items():
+            guide = (ROOT / guide_path).read_text()
+            skills = ROOT / "plugins" / collection / "skills"
+            names = sorted(path.name for path in skills.iterdir() if path.is_dir())
+            self.assertTrue(names, f"{collection}: no skills")
 
-        for name in skill_names:
-            with self.subTest(skill=name):
-                self.assertIn(f"`/spec:{name}`", guide)
-                self.assertIn(f"`$spec-{name}`", guide)
+            for name in names:
+                with self.subTest(collection=collection, skill=name):
+                    self.assertIn(f"`/{collection}:{name}`", guide)
+                    self.assertIn(f"`${collection}-{name}`", guide)
+
+    def test_readme_lists_every_collection(self) -> None:
+        readme = (ROOT / "README.md").read_text()
+        for collection, guide_path in GUIDES.items():
+            with self.subTest(collection=collection):
+                self.assertIn(f"plugins/{collection}", readme)
+                self.assertIn(guide_path, readme)
 
     def test_public_markdown_links_resolve(self) -> None:
         markdown = [path for path in PUBLIC_DOCS if path.is_file()]

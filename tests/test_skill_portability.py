@@ -23,7 +23,7 @@ class SkillPortabilityTest(unittest.TestCase):
             "wallfacer is the reference implementation",
         )
 
-        for path in (ROOT / "plugins/spec/skills").glob("*/SKILL.md"):
+        for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
             text = path.read_text()
             for phrase in forbidden:
                 with self.subTest(skill=path.parent.name, phrase=phrase):
