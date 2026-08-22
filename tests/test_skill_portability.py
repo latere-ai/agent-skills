@@ -29,6 +29,26 @@ class SkillPortabilityTest(unittest.TestCase):
                 with self.subTest(skill=path.parent.name, phrase=phrase):
                     self.assertNotIn(phrase, text)
 
+    def test_release_skill_keeps_its_two_guarantees(self) -> None:
+        """The whole point of the skill is prose an edit could quietly drop.
+
+        Both guarantees are checked by the phrase that implements them: the CI
+        gate must query one commit rather than a branch, must not accept a run
+        that is still going, and the release must be verified against what is
+        actually live afterwards.
+        """
+        skill = (ROOT / "plugins/ci/skills/tag-and-release/SKILL.md").read_text()
+
+        for phrase in (
+            "gh run list --commit",  # green on this commit, not on the branch
+            "in_progress",  # a pending run is not a green run
+            "gh run watch",  # wait for the release run rather than assuming
+            "gh release view",  # the release object exists
+            "version",  # what is live reports the tag just pushed
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+
 
 if __name__ == "__main__":
     unittest.main()
