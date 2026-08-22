@@ -1,6 +1,6 @@
 ---
 title: Harness-neutral skill distribution
-status: testing
+status: complete
 depends_on: []
 affects:
   - README.md
@@ -105,14 +105,16 @@ copying so a preflight failure cannot leave a partial installation.
 
 ### Status
 
-Implemented on 2026-08-22 in `112edbc` and `8755326`; final verification is
-in progress.
+Completed on 2026-08-22. Implementation landed in `112edbc` and `8755326` and
+passed local and published-repository verification.
 
 ### What was done
 
 - Added a Codex installer that derives all 14 namespaced `$spec-*` skills from
   the canonical Claude plugin sources.
 - Added unit, error-path, metadata, and end-to-end installation tests to CI.
+- Verified the documented flow from a fresh clone of the renamed GitHub
+  repository; it installed all 14 Codex skills successfully.
 - Reworked repository and collection documentation for Claude Code and Codex.
 - Renamed the GitHub repository to `latere-ai/agent-skills`, updated its
   description, and updated the local `origin` URL.
