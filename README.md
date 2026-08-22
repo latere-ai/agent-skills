@@ -1,26 +1,46 @@
-# Latere AI plugins for Claude Code
+# Latere AI agent skills
 
-A marketplace of Claude Code plugins built at [Latere AI](https://latere.ai).
+Reusable workflows built at [Latere AI](https://latere.ai), packaged from one
+source for Claude Code and Codex.
+
+## Install for Claude Code
 
 ```
-/plugin marketplace add latere-ai/claude-plugins
+/plugin marketplace add latere-ai/agent-skills
+/plugin install spec@latere-ai
 ```
 
-## Plugins
+## Install for Codex
 
-| Plugin | Install | What it is |
-| --- | --- | --- |
-| [spec](plugins/spec) | `/plugin install spec@latere-ai` | Spec-driven development: design specs with a seven-state lifecycle, decomposed into a dependency DAG, driven from idea to shipped |
+```sh
+git clone https://github.com/latere-ai/agent-skills.git
+cd agent-skills
+python3 scripts/install.py codex spec
+```
+
+The installer adds namespaced skills such as `$spec-create`, `$spec-implement`,
+and `$spec-drive` to `$CODEX_HOME/skills` (or `~/.codex/skills`) without
+overwriting existing skills. They are available on the next Codex turn.
+
+## Collections
+
+| Collection | Claude Code | Codex | What it is |
+| --- | --- | --- | --- |
+| [spec](plugins/spec) | `/plugin install spec@latere-ai` | `python3 scripts/install.py codex spec` | Drive design specs through a seven-state lifecycle and a dependency DAG, from idea to verified delivery |
 
 ## Layout
 
 ```
-.claude-plugin/marketplace.json   the marketplace manifest
+.claude-plugin/marketplace.json   Claude Code marketplace adapter
 plugins/<name>/
-  .claude-plugin/plugin.json      the plugin manifest
-  skills/<skill>/SKILL.md         one directory per skill
+  .claude-plugin/plugin.json      Claude Code collection adapter
+  skills/<skill>/SKILL.md         canonical, shared skill source
   README.md
+scripts/install.py                harness-specific installation adapter
 ```
+
+Harness adapters may namespace commands or omit harness-specific metadata, but
+the workflow instructions stay in the canonical skill source.
 
 ## Contributing
 

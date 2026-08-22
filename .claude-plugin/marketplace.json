@@ -5,7 +5,7 @@
     "url": "https://latere.ai"
   },
   "metadata": {
-    "description": "Claude Code plugins from Latere AI.",
+    "description": "Latere AI agent skills, packaged for Claude Code.",
     "version": "0.1.0"
   },
   "plugins": [

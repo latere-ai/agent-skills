@@ -129,5 +129,25 @@ class InstallerEndToEndTest(unittest.TestCase):
         self.assertIn("error: invalid collection name: '../spec'", result.stderr)
 
 
+class DistributionMetadataTest(unittest.TestCase):
+    def test_repository_uses_neutral_identity(self) -> None:
+        owned_files = [
+            ROOT / "README.md",
+            ROOT / ".claude-plugin/marketplace.json",
+            ROOT / "plugins/spec/.claude-plugin/plugin.json",
+            ROOT / "plugins/spec/README.md",
+        ]
+
+        for path in owned_files:
+            with self.subTest(path=path.relative_to(ROOT)):
+                self.assertNotIn("claude-plugins", path.read_text())
+
+    def test_root_readme_documents_both_harnesses(self) -> None:
+        readme = (ROOT / "README.md").read_text()
+
+        self.assertIn("/plugin marketplace add latere-ai/agent-skills", readme)
+        self.assertIn("python3 scripts/install.py codex spec", readme)
+
+
 if __name__ == "__main__":
     unittest.main()

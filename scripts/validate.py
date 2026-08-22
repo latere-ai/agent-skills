@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Check that the marketplace, its plugins, and their skills agree.
+"""Check that the Claude marketplace adapter and canonical skills agree.
 
-Claude Code fails quietly on a malformed plugin: a skill whose frontmatter
+Claude Code fails quietly on a malformed adapter: a skill whose frontmatter
 `name` does not match its directory, or a plugin the marketplace points at but
 that carries no manifest, simply does not appear. These checks turn that into a
 build failure instead.

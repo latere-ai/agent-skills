@@ -1,16 +1,31 @@
 # spec
 
-Spec-driven development for Claude Code. A design lives in a markdown file with
-YAML frontmatter; the file carries a lifecycle state, a dependency edge list,
-and the code paths it affects. The skills move specs through that lifecycle and
-turn them into shipped code.
+Spec-driven development for Claude Code and Codex. A design lives in a markdown
+file with YAML frontmatter; the file carries a lifecycle state, a dependency
+edge list, and the code paths it affects. The skills move specs through that
+lifecycle and turn them into shipped code.
 
-## Install
+## Install for Claude Code
 
 ```
-/plugin marketplace add latere-ai/claude-plugins
+/plugin marketplace add latere-ai/agent-skills
 /plugin install spec@latere-ai
 ```
+
+Claude Code exposes the skills as `/spec:create`, `/spec:implement`, and the
+other commands listed below.
+
+## Install for Codex
+
+From a checkout of `latere-ai/agent-skills`:
+
+```sh
+python3 scripts/install.py codex spec
+```
+
+Codex exposes the same workflows with namespaced skill names: `$spec-create`,
+`$spec-implement`, `$spec-drive`, and so on. The installed copies come from the
+same canonical source as the Claude Code plugin.
 
 ## The document model
 

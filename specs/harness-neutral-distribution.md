@@ -20,10 +20,10 @@ dispatched_task_id: null
 
 ## Overview
 
-Rename the repository from `claude-plugins` to `agent-skills` and make the
-skills installable in Codex without removing the existing Claude Code
-marketplace. The skill sources remain shared so fixes cannot drift between
-harness-specific copies.
+Give the repository the neutral `agent-skills` identity and make the skills
+installable in Codex without removing the existing Claude Code marketplace.
+The skill sources remain shared so fixes cannot drift between harness-specific
+copies.
 
 ## Current state
 

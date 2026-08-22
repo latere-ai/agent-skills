@@ -117,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: {error}", file=sys.stderr)
         return 1
     print(f"Installed {len(installed)} {args.collection} skills for Codex in {destination}")
-    print("Restart Codex to load the new skills.")
+    print("The skills will be available on your next Codex turn.")
     return 0
 
 
