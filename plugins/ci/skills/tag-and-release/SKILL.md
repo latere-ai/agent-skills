@@ -124,31 +124,50 @@ Show the user, in one message: the version, the commit being tagged, the commits
 included, the tag message, and what pushing will trigger (which pipeline, which
 environment, which URL). Ask for confirmation and wait for it.
 
-On approval:
+On approval, create an annotated tag — pass the message on stdin so no scratch
+file is needed:
 
 ```bash
-git tag -a <tag> -F <message-file>
+git tag -a <tag> -F - <<'EOF'
+<subject line>
+
+<body>
+EOF
 git push origin <tag>
 ```
 
-Use an annotated tag. If the push fails, stop and report; do not retry with a
-different version to get around it.
+If the push fails, stop and report; do not retry with a different version to get
+around it.
 
 ## Step 5: Prove it released
 
 This step is not optional, and its result is the answer the user asked for.
 
-1. **Find the run the tag started.** Poll until it appears — it may take a few
-   seconds:
+1. **Find the run the tag started, by the tag.** A tag-triggered run carries the
+   tag in the ref it was built from, so query on that. Do not match on the run's
+   title: for a tag push it shows the tagged commit's subject, which is also the
+   title of the branch run that preceded it.
 
    ```bash
-   gh run list --workflow <release-workflow> --limit 5 \
-     --json headBranch,status,conclusion,url
+   gh run list --branch <tag> --json databaseId,workflowName,status,conclusion,url
    ```
 
-2. **Wait for it to finish.** Poll on a sensible interval rather than blocking a
-   terminal, and keep working only if there is something to do. Do not guess the
-   outcome, and never report a result while the run is `in_progress`.
+   The run may take a few seconds to appear. An empty result means the tag
+   triggered nothing — re-read what you found in Step 1 rather than waiting
+   indefinitely.
+
+2. **Wait for it to finish**, with the command built for waiting:
+
+   ```bash
+   gh run watch <run-id> --exit-status
+   ```
+
+   It blocks until the run completes and exits non-zero if the run failed. If
+   the host has no such command, poll — but note that an agent harness may
+   refuse a blocking `sleep` in the foreground, so run the wait loop in the
+   background and read its result, rather than issuing bare polls that each
+   return immediately and read as "not finished yet". Never report a result
+   while the run is `queued` or `in_progress`.
 
 3. **Judge the outcome.**
    - `success` — continue to verification.
