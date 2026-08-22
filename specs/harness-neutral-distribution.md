@@ -1,6 +1,6 @@
 ---
 title: Harness-neutral skill distribution
-status: validated
+status: testing
 depends_on: []
 affects:
   - README.md
@@ -100,3 +100,46 @@ copying so a preflight failure cannot leave a partial installation.
   regresses.
 - All repository-owned references use `latere-ai/agent-skills`.
 - The GitHub repository and local remote use the neutral name.
+
+## Implementation notes
+
+### Status
+
+Implemented on 2026-08-22 in `112edbc` and `8755326`; final verification is
+in progress.
+
+### What was done
+
+- Added a Codex installer that derives all 14 namespaced `$spec-*` skills from
+  the canonical Claude plugin sources.
+- Added unit, error-path, metadata, and end-to-end installation tests to CI.
+- Reworked repository and collection documentation for Claude Code and Codex.
+- Renamed the GitHub repository to `latere-ai/agent-skills`, updated its
+  description, and updated the local `origin` URL.
+
+### What was not done
+
+- None.
+
+### Decisions made during implementation
+
+- Codex skills use the `spec-` prefix to prevent collisions with generic skill
+  names such as `create` and `validate`.
+- Harness adaptation happens during installation so workflow prose remains a
+  single source shared by Claude Code and Codex.
+- Existing Codex skills are never overwritten; reinstalling requires explicit
+  removal so local modifications cannot be lost silently.
+
+### Deviations from the spec
+
+- None.
+
+### Surprises / gotchas
+
+- The orchestrator refers to the Claude command family as `/spec:*`; the
+  end-to-end test caught this wildcard form and the adapter now maps it to
+  `$spec-*` as well as mapping concrete commands.
+
+### Follow-ups
+
+- None.
