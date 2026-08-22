@@ -1,6 +1,6 @@
 ---
 title: Open-source project guidance
-status: drafted
+status: validated
 depends_on:
   - specs/harness-neutral-distribution.md
 affects:
