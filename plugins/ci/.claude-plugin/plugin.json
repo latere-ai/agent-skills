@@ -1,0 +1,11 @@
+{
+  "name": "ci",
+  "version": "0.1.0",
+  "description": "Continuous integration: commit work in reviewable units, and cut a release only when the pipeline proves the build is green and the deployment is live.",
+  "author": {
+    "name": "Latere AI",
+    "url": "https://latere.ai"
+  },
+  "homepage": "https://github.com/latere-ai/agent-skills",
+  "license": "MIT"
+}

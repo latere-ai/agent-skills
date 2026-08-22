@@ -18,6 +18,16 @@
         "url": "https://latere.ai"
       },
       "source": "./plugins/spec"
+    },
+    {
+      "name": "ci",
+      "description": "Continuous integration: commit work in reviewable units, and cut a release only when the pipeline proves the build is green and the deployment is live.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Latere AI",
+        "url": "https://latere.ai"
+      },
+      "source": "./plugins/ci"
     }
   ]
 }
