@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -56,18 +57,11 @@ Run /spec:validate, then /spec:review-impl from the /spec:* family.
 
 class DestinationTest(unittest.TestCase):
     def test_uses_codex_home(self) -> None:
-        previous = os.environ.get("CODEX_HOME")
-        os.environ["CODEX_HOME"] = "/tmp/custom-codex-home"
-        try:
+        with mock.patch.dict(os.environ, {"CODEX_HOME": "/tmp/custom-codex-home"}):
             self.assertEqual(
                 installer.codex_skills_dir(),
                 pathlib.Path("/tmp/custom-codex-home/skills"),
             )
-        finally:
-            if previous is None:
-                del os.environ["CODEX_HOME"]
-            else:
-                os.environ["CODEX_HOME"] = previous
 
 
 class InstallerEndToEndTest(unittest.TestCase):
