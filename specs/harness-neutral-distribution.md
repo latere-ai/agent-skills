@@ -1,6 +1,6 @@
 ---
 title: Harness-neutral skill distribution
-status: drafted
+status: validated
 depends_on: []
 affects:
   - README.md
