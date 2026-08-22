@@ -1,6 +1,6 @@
 ---
 title: Open-source project guidance
-status: validated
+status: testing
 depends_on:
   - specs/harness-neutral-distribution.md
 affects:
@@ -62,8 +62,9 @@ project's scope, and link deeper guidance.
 ### Spec kit guide
 
 Add `docs/spec-kit.md` with prerequisites, a five-minute path, small and large
-change workflows, lifecycle explanations, command mapping for both harnesses,
-team adoption guidance, optional task-board behavior, and troubleshooting.
+change workflows, lifecycle explanations, rendered workflow diagrams, command
+mapping for both harnesses, team adoption guidance, optional task-board
+behavior, and troubleshooting.
 
 ### Community health files
 
@@ -91,7 +92,59 @@ Keep concrete examples only when they are clearly labeled as examples.
 - The spec guide explains which workflow fits a small change, large change,
   stale spec, implementation review, and status check.
 - Claude Code and Codex examples remain equivalent and copyable.
+- README and lifecycle diagrams parse, render, and remain legible at normal
+  documentation width.
 - Public community health files give contributors actionable expectations.
 - Skill instructions discover the host repository's commands instead of
   assuming Latere AI's former application stack.
 - Documentation checks and the full existing test suite pass in CI.
+
+## Outcome
+
+### Summary
+
+Implemented directly on 2026-08-22 in `47573f8` through `0940bdc`. All scoped
+items shipped with minimal drift, and 17/17 automated tests pass.
+
+### What shipped
+
+- Reworked the root README around first-time user value, two copyable harness
+  paths, verified CI and license badges, and a rendered workflow diagram.
+- Added `docs/spec-kit.md` with a five-minute path, lifecycle visualization,
+  small and large change workflows, all 14 skill mappings, team conventions,
+  optional integration guidance, limits, and troubleshooting.
+- Turned `plugins/spec/README.md` into a concise technical reference.
+- Added contribution, conduct, security, issue, and pull-request guidance.
+- Enabled GitHub private vulnerability reporting so the security policy's
+  confidential disclosure path works.
+- Removed fixed Go, Vue, Make, and private-service assumptions from canonical
+  skills, and added first-use spec-tree bootstrapping.
+- Added public-doc and portability regression tests to the existing installer
+  and manifest coverage.
+
+### Design evolution
+
+- The requested visualization pass added two Mermaid diagrams after the initial
+  spec was written. The spec and acceptance criteria now include them.
+- The complete lifecycle remains authoritative in the state table. The diagram
+  shows common delivery and recovery paths so it stays readable.
+
+### Not implemented
+
+- None.
+
+### Unspecified work
+
+- None beyond the user-requested visualization extension recorded above.
+
+### Decisions, surprises, and follow-ups
+
+- GitHub-native Mermaid was chosen because it renders in the repository without
+  generated image assets or a documentation build pipeline.
+- Visual verification caught an overly wide flow and a tangled complete-state
+  graph. Both were simplified and rendered again before commit.
+- The public guide separates evaluator, adopter, and technical-reference
+  language instead of blending those audiences on one page.
+- No support response times, security response times, or contact addresses were
+  invented.
+- Follow-ups: none.
