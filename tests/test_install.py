@@ -142,11 +142,14 @@ class DistributionMetadataTest(unittest.TestCase):
             with self.subTest(path=path.relative_to(ROOT)):
                 self.assertNotIn("claude-plugins", path.read_text())
 
-    def test_root_readme_documents_both_harnesses(self) -> None:
+    def test_root_readme_documents_both_harnesses_and_collections(self) -> None:
         readme = (ROOT / "README.md").read_text()
 
         self.assertIn("/plugin marketplace add latere-ai/agent-skills", readme)
-        self.assertIn("python3 scripts/install.py codex spec", readme)
+        collections = sorted(path.name for path in (ROOT / "plugins").iterdir() if path.is_dir())
+        for collection in collections:
+            with self.subTest(collection=collection):
+                self.assertIn(f"python3 scripts/install.py codex {collection}", readme)
 
 
 if __name__ == "__main__":

@@ -50,12 +50,13 @@ Create your first spec:
 
 ### Codex
 
-Clone the repository and run the installer with Python 3.10 or newer:
+Clone the repository and install both collections with Python 3.10 or newer:
 
 ```sh
 git clone https://github.com/latere-ai/agent-skills.git
 cd agent-skills
 python3 scripts/install.py codex spec
+python3 scripts/install.py codex ci
 ```
 
 Start a new Codex turn, then create your first spec:
@@ -64,10 +65,10 @@ Start a new Codex turn, then create your first spec:
 $spec-create product/cache-warming Add bounded cache warming so first requests avoid the full load cost
 ```
 
-The installer writes namespaced skills such as `$spec-create`,
-`$spec-implement`, and `$spec-drive` to `$CODEX_HOME/skills`, or
+The installer writes namespaced skills such as `$spec-create`, `$spec-drive`,
+`$ci-commit-and-push`, and `$ci-tag-and-release` to `$CODEX_HOME/skills`, or
 `~/.codex/skills` when `CODEX_HOME` is unset. It refuses to overwrite existing
-skills.
+skills. You can omit either installer command when you only need one collection.
 
 ### Take the spec to completion
 
