@@ -33,8 +33,12 @@ class OpenSourceProjectTest(unittest.TestCase):
         self.assertIn("## Quick start", readme)
 
     def test_public_guides_include_renderable_workflow_diagrams(self) -> None:
-        self.assertIn("```mermaid\nflowchart", (ROOT / "README.md").read_text())
-        self.assertIn("```mermaid\nstateDiagram-v2", (ROOT / "docs/spec-kit.md").read_text())
+        readme = (ROOT / "README.md").read_text()
+        guide = (ROOT / "docs/spec-kit.md").read_text()
+
+        self.assertNotIn("```mermaid", readme)
+        self.assertIn("```mermaid\nflowchart", guide)
+        self.assertIn("```mermaid\nstateDiagram-v2", guide)
 
     def test_spec_guide_covers_each_installed_skill(self) -> None:
         guide = (ROOT / "docs/spec-kit.md").read_text()

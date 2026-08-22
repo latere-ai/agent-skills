@@ -60,6 +60,27 @@ clear change it can validate, implement, test, and wrap up the spec. It pauses
 before outward or hard-to-reverse actions, such as dispatching work to a task
 board.
 
+## How the spec workflow fits together
+
+```mermaid
+flowchart TD
+    request[Change request] --> create[Create spec]
+    create --> scope{Scope ready?}
+    scope -- No --> split[Break down design]
+    split --> scope
+    scope -- Yes --> validate[Validate]
+    validate --> implement[Implement]
+    implement --> verdict[Testing verdict]
+    verdict -- Matches intent --> complete[Complete]
+    verdict -- Significant drift --> stale[Stale]
+    stale --> refine[Refine]
+    refine --> validate
+```
+
+The default workflow only needs Markdown and Git. Repositories with a compatible
+task-board transition API can also dispatch specs as linked tasks, but no server
+is required.
+
 ## Choose the right workflow
 
 | Situation | Start with | What happens |

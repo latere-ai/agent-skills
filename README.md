@@ -88,44 +88,6 @@ troubleshooting.
 | --- | --- | --- |
 | [spec](plugins/spec) | 14 skills for design, dependency planning, implementation, review, drift detection, and lifecycle reporting | [Usage guide](docs/spec-kit.md) |
 
-## How the spec workflow fits together
-
-```mermaid
-flowchart TD
-    request[Change request] --> create[Create spec]
-    create --> scope{Scope ready?}
-    scope -- No --> split[Break down design]
-    split --> scope
-    scope -- Yes --> validate[Validate]
-    validate --> implement[Implement]
-    implement --> verdict[Testing verdict]
-    verdict -- Matches intent --> complete[Complete]
-    verdict -- Significant drift --> stale[Stale]
-    stale --> refine[Refine]
-    refine --> validate
-```
-
-The default workflow only needs Markdown and Git. Repositories with a compatible
-task-board transition API can also dispatch specs as linked tasks, but no server
-is required.
-
-## Project layout
-
-```text
-.claude-plugin/marketplace.json   Claude Code marketplace adapter
-plugins/<collection>/
-  .claude-plugin/plugin.json      Claude Code collection adapter
-  skills/<skill>/SKILL.md         canonical shared skill source
-  README.md                       collection reference
-docs/                             task-oriented usage guides
-scripts/install.py                harness installation adapter
-scripts/validate.py               manifest and skill validation
-tests/                            installer, portability, and docs tests
-```
-
-Harness adapters may namespace invocations or omit harness-specific metadata.
-The workflow instructions remain in one canonical source.
-
 ## Contributing
 
 Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) for
