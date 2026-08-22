@@ -1,0 +1,36 @@
+name: Feature proposal
+description: Propose a skill, collection, harness integration, or workflow improvement
+title: "proposal: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem should this solve?
+      description: Describe the user and the outcome they cannot reach today.
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: What workflow do you propose?
+      description: Show where it begins, what it changes, and what proves completion.
+    validations:
+      required: true
+  - type: checkboxes
+    id: harnesses
+    attributes:
+      label: Harnesses
+      options:
+        - label: Claude Code
+        - label: Codex
+        - label: Harness-neutral source only
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Explain current workarounds or smaller options.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Examples or evidence
+      description: Link public examples or include sanitized input and expected output.
