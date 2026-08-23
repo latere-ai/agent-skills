@@ -49,6 +49,16 @@ class SkillPortabilityTest(unittest.TestCase):
                 with self.subTest(skill=path.parent.name, phrase=phrase):
                     self.assertNotIn(phrase, text)
 
+    def test_spec_template_does_not_hardcode_an_author(self) -> None:
+        """The frontmatter template is copied verbatim into a user's spec.
+
+        A literal maintainer handle here stamps that name onto every spec the
+        skill creates in someone else's repository.
+        """
+        for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
+            with self.subTest(skill=path.parent.name):
+                self.assertNotIn("author: changkun", path.read_text())
+
     def test_release_skill_keeps_its_two_guarantees(self) -> None:
         """The whole point of the skill is prose an edit could quietly drop.
 
