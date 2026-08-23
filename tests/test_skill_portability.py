@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pathlib
+import re
 import unittest
 
 
@@ -30,25 +31,20 @@ class SkillPortabilityTest(unittest.TestCase):
                 with self.subTest(skill=path.parent.name, phrase=phrase):
                     self.assertNotIn(phrase, text)
 
-    def test_skills_name_no_private_sibling_repository(self) -> None:
+    def test_skills_name_no_sibling_checkout(self) -> None:
         """Skill bodies ship to every user, so an example path must be generic.
 
-        A relative path into a named sibling checkout only resolves on the
-        maintainer's machine and publishes that repository's name.
+        A relative path into a named sibling checkout resolves only on the
+        machine it was written on, and it publishes that checkout's name. A
+        bare `../` used to describe where sibling repositories live is fine;
+        `../<name>/` is not.
         """
-        forbidden = (
-            "../lux/",
-            "../agents/",
-            "../auth/",
-            "../sandbox/",
-            "../platform/",
-        )
+        named_sibling = re.compile(r"\.\./[A-Za-z0-9_.-]+/")
 
         for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
-            text = path.read_text()
-            for phrase in forbidden:
-                with self.subTest(skill=path.parent.name, phrase=phrase):
-                    self.assertNotIn(phrase, text)
+            with self.subTest(skill=path.parent.name):
+                found = named_sibling.findall(path.read_text())
+                self.assertEqual([], found)
 
     def test_spec_template_does_not_hardcode_an_author(self) -> None:
         """The frontmatter template is copied verbatim into a user's spec.

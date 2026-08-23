@@ -235,10 +235,10 @@ same-repo reference fixed; any **sibling-repo** listings left stale on purpose
 
 - **The `.archive` grep undercounts the max number.** Active specs at the root
   usually hold the highest numbers. Compute `max` over root **and** `.archive/`.
-- **Cross-repo companions look local but aren't.** `auth-unification-migration`,
-  `local-build-deploy`, and similar share a bare filename across every product
-  repo. Grep `../` before renaming; expect sibling READMEs to reference the old
-  name and leave them alone.
+- **Cross-repo companions look local but aren't.** A spec covering one
+  workstream that spans several repositories often carries the same bare
+  filename in each of them. Grep `../` before renaming; expect sibling READMEs
+  to reference the old name and leave them alone.
 - **A `draft` status can be a lie.** A spec with an `## Outcome` section shipped;
   treat it as terminal and correct the status on the way to `.archive/`.
 - **Never renumber.** Gaps in the sequence are fine and expected (folded/reverted
