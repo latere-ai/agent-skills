@@ -29,6 +29,26 @@ class SkillPortabilityTest(unittest.TestCase):
                 with self.subTest(skill=path.parent.name, phrase=phrase):
                     self.assertNotIn(phrase, text)
 
+    def test_skills_name_no_private_sibling_repository(self) -> None:
+        """Skill bodies ship to every user, so an example path must be generic.
+
+        A relative path into a named sibling checkout only resolves on the
+        maintainer's machine and publishes that repository's name.
+        """
+        forbidden = (
+            "../lux/",
+            "../agents/",
+            "../auth/",
+            "../sandbox/",
+            "../platform/",
+        )
+
+        for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
+            text = path.read_text()
+            for phrase in forbidden:
+                with self.subTest(skill=path.parent.name, phrase=phrase):
+                    self.assertNotIn(phrase, text)
+
     def test_release_skill_keeps_its_two_guarantees(self) -> None:
         """The whole point of the skill is prose an edit could quietly drop.
 

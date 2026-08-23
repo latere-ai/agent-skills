@@ -48,10 +48,10 @@ A directory full of track sub-directories and no specs of its own has nothing
 to number. Say which sub-directories are candidates and let the user pick one,
 rather than recursing on your own.
 
-Look at a sibling repo's `specs/README.md` (or lux's, if reachable at
-`../lux/specs/README.md`) as the reference shape for the index: a status-legend
-line plus one `| # | Spec | Status |` table ordered by number, active rows
-linking to the root and archived rows into `.archive/`.
+If the repository, or a sibling repository you can read, already has a
+`specs/README.md`, use it as the reference shape for the index. Otherwise use
+this shape: a status-legend line plus one `| # | Spec | Status |` table ordered
+by number, active rows linking to the root and archived rows into `.archive/`.
 
 ## Step 1: Inventory
 
