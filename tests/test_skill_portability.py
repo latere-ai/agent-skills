@@ -21,6 +21,7 @@ class SkillPortabilityTest(unittest.TestCase):
             "make test",
             "make build",
             "wallfacer is the reference implementation",
+            "WALLFACER_DRIFT_TESTER",
         )
 
         for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
