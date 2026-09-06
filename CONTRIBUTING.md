@@ -101,6 +101,30 @@ when commands, names, lifecycle behavior, or installation steps change.
 Maintainers may ask to split a large change when independent concerns can be
 reviewed and released separately.
 
+## Writing
+
+Every sentence a skill emits or carries is written for one reader, and the
+register follows the reader:
+
+- User, a person or a coding harness: skill instructions (the harness that
+  runs a skill is the user), `validate.py` output, the README and public
+  docs. Short and plain: what happened and what to do next, naming a command
+  or a page, never a package, a function, a table, or a Kubernetes object.
+- Contributor, someone changing a skill: specs, this file, package
+  documentation, commit messages, source comments. Precise, in the project's
+  own terms, with the reason a design is what it is.
+- Developer, someone debugging a running system: test output and the
+  installer's failure messages. Exact and complete: object, operation,
+  observed value, expected value, and the underlying error.
+
+An error has one code, one fixed user sentence in `message`, and one
+developer detail in a separate field shown only on request. The canonical
+statement, worked examples, and the review checklist are in the registers
+document in pkg:
+https://github.com/latere-ai/pkg/blob/main/docs/writing/registers.md
+The rule applies to new text and to reviews; existing text is fixed as it is
+touched.
+
 ## License
 
 By contributing, you agree that your contribution is licensed under the
