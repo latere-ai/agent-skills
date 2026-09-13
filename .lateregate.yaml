@@ -1,0 +1,5 @@
+# The identity shape of the family: specs/infrastructure/identity.md in latere-ai/specs.
+# This repository verifies no token and mints none, so it holds no rule of the shape;
+# the family check reads the role and lists it.
+identity:
+  role: none
