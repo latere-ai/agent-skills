@@ -40,9 +40,9 @@ git diff --staged
 git log --oneline -10
 ```
 
-Read the recent log for the house style: message length, mood, capitalisation,
+Read the recent log for the house style: message length, mood, capitalization,
 whether bodies are used. Match it. A commit that reads differently from its
-neighbours is noise for every future reader of the log.
+neighbors is noise for every future reader of the log.
 
 If something is already staged, treat that as a hint about an intended grouping,
 not as a decision — regroup if it mixes concerns.
@@ -55,7 +55,7 @@ directory:
 - a bug fix and its regression test belong together;
 - a feature and the documentation describing it belong together;
 - a rename that touches thirty files is one commit;
-- a formatting sweep is its own commit, never mixed with behaviour;
+- a formatting sweep is its own commit, never mixed with behavior;
 - a dependency bump is its own commit.
 
 Untracked files need a decision each. Include a file only when it belongs to the

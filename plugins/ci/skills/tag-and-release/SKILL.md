@@ -27,7 +27,7 @@ every step as outward-facing.
 
 `$ARGUMENTS` may contain, in any order:
 
-- an explicit version (`v1.4.0`, `1.4.0`) — use exactly this, only normalising
+- an explicit version (`v1.4.0`, `1.4.0`) — use exactly this, only normalizing
   the prefix to match existing tags;
 - a bump level (`major`, `minor`, `patch`) — compute the next version from the
   latest tag;
@@ -103,10 +103,10 @@ a passed one. Report which gate failed and what would clear it.
 ## Step 3: Choose the version and write the notes
 
 1. List what is being released: `git log --oneline <last-tag>..HEAD`.
-2. Choose the next version under the repository's scheme, honouring an explicit
+2. Choose the next version under the repository's scheme, honoring an explicit
    argument. With no argument, propose one and justify it in a sentence:
-   breaking or removed behaviour is a major bump, new user-visible behaviour is
-   a minor bump, and fixes or behaviour-preserving changes are a patch bump. Say
+   breaking or removed behavior is a major bump, new user-visible behavior is
+   a minor bump, and fixes or behavior-preserving changes are a patch bump. Say
    which commits drove the choice.
 3. Draft the annotated tag message in the format the previous tags use, unless
    `--notes` supplied one. It is the release note, so write it for the people
@@ -192,7 +192,7 @@ This step is not optional, and its result is the answer the user asked for.
 
 5. **Report the verdict** with evidence: the tag, the run URL and conclusion, the
    release URL, and each verification with what it returned. If any check could
-   not be run, name it and say why. Never summarise an unverified release as
+   not be run, name it and say why. Never summarize an unverified release as
    released.
 
 ## Rules

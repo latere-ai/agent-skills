@@ -132,7 +132,7 @@ actually tagged.
 - a feature travels with the documentation that describes it;
 - a wide rename is one commit;
 - formatting and dependency bumps are separate commits, never mixed with
-  behaviour.
+  behavior.
 
 It stages by explicit path, so `git add -A` and `git add .` never run, and it
 decides untracked files one at a time. Build output, scratch files, and anything
