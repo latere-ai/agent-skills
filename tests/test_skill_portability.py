@@ -23,6 +23,12 @@ class SkillPortabilityTest(unittest.TestCase):
             "make build",
             "wallfacer is the reference implementation",
             "WALLFACER_DRIFT_TESTER",
+            # One repository's files and README shapes, taken for everyone's.
+            "01-sandbox-backends.md",
+            "Milestones table",
+            "Status Quo section",
+            # A board field that one task server removed.
+            "`goal` = the title",
         )
 
         for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
