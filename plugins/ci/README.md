@@ -21,8 +21,9 @@ Claude Code exposes `/ci:<skill>`. Codex exposes the same workflow as
 ## Core contract
 
 - The repository is the source of truth. Both skills read `AGENTS.md`,
-  `CLAUDE.md`, `CONTRIBUTING.md`, and CI configuration before acting, and those
-  instructions outrank the skills.
+  `CLAUDE.md`, and `CONTRIBUTING.md` before acting, and `tag-and-release` also
+  reads the CI configuration and any release rules. Those instructions outrank
+  the skills.
 - Nothing is discovered once and cached. Each run re-reads the repository, so a
   changed release pipeline is picked up without configuration.
 - Outward-facing steps ask first. Pushing a tag is confirmed with the user
@@ -43,6 +44,8 @@ path, and pushes once.
   formatting sweep or a dependency bump is its own commit.
 - Untracked files are decided one at a time and anything left out is reported.
 - No attribution trailers are added unless the repository asks for them.
+- On the default branch of a repository that states no branch policy, it asks
+  before pushing.
 
 ### `tag-and-release`
 
@@ -69,10 +72,10 @@ A pending run is not a green run, and a status that cannot be retrieved is a
 failed gate rather than a passed one.
 
 After the tag is pushed it waits for the release pipeline, then verifies what
-the pipeline promised: the run's conclusion, the release object, the deployed
-environment's health endpoint, and — where the service exposes a version — that
-the live version is the one just tagged. Anything it could not check is named in
-the report instead of being implied.
+the pipeline promised: the run's conclusion, the release object, the published
+artifact, the deployed environment's health endpoint, and, where the service
+exposes a version, that the live version is the one just tagged. Anything it
+could not check is named in the report instead of being implied.
 
 ## Requirements
 

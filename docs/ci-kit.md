@@ -2,7 +2,7 @@
 
 The CI kit handles the end of a change: committing it so other people can review
 it, and releasing it so other people can use it. It is deliberately strict about
-one thing — a release is not reported as done until the pipeline has finished
+one thing: a release is not reported as done until the pipeline has finished
 and the deployed service has answered.
 
 Use it on any repository that keeps its history in Git. The release skill also
@@ -36,8 +36,9 @@ $ci-commit-and-push
 ```
 
 The agent reads the diff, groups it into logical commits, stages each group by
-path, and pushes once. It reports the commits it made and anything it chose to
-leave behind.
+path, and pushes once. When your repository states no branch policy and you are
+on the default branch, it asks before pushing there. It reports the commits it
+made and anything it chose to leave behind.
 
 When the branch is where you want it and CI has run, release:
 
@@ -76,8 +77,12 @@ about **that SHA**:
 
 ```bash
 sha=$(git rev-parse HEAD)
-gh run list --commit "$sha" --json workflowName,status,conclusion
+gh run list --commit "$sha" --json workflowName,event,status,conclusion
 ```
+
+The commands are written for GitHub's `gh`. On another host the skill uses that
+host's equivalent query for commit status, and it stops if no status can be
+retrieved at all.
 
 - No runs for that commit means nothing was proven. That is a stop.
 - A run still queued or in progress is not green. That is a stop, though you can
@@ -90,16 +95,18 @@ already taken, or a tag with no commits behind it.
 
 ## What "released" means here
 
-After the tag is pushed, the skill waits for the pipeline and then checks what
-that pipeline claimed it would do:
+After the tag is pushed, the skill finds the run the tag started, waits for it
+with `gh run watch`, and then checks what that pipeline claimed it would do,
+whichever of these apply:
 
 1. the run finished with `success`;
 2. the release object exists and is not a draft;
-3. the deployed environment's health endpoint returns a success status;
-4. where the service reports a version, build, or commit, it reports the tag
+3. the image, package, or binary the workflow produces can be retrieved;
+4. the deployed environment's health endpoint returns a success status;
+5. where the service reports a version, build, or commit, it reports the tag
    that was just pushed.
 
-The fourth check is the one that separates "the deployment rolled" from "the old
+The last check is the one that separates "the deployment rolled" from "the old
 version is still serving". If your service has no version endpoint, the skill
 says so in its report rather than letting silence read as confirmation.
 
@@ -120,9 +127,13 @@ explains the choice in a sentence. You can also be explicit:
 ```
 
 The tag is annotated and its message is the release note, written in the format
-your previous tags use. If your repository maintains a changelog by hand, update
-and commit it before releasing — the CI gate has to pass on the commit that is
-actually tagged.
+your previous tags use, or taken from the file you pass with `--notes`.
+
+If your repository states a release prerequisite, such as a changelog entry, a
+version constant, or a manifest version, and it is out of date, the skill
+updates and commits it first and then runs the preflight gates again. Those
+gates now apply to the new commit: it has to be on the remote and green in CI
+before the tag goes on it.
 
 ## How commits get grouped
 
@@ -151,8 +162,7 @@ that looks like a leaked credential stay out, and it tells you what it left.
 
 Check the runs for the exact commit, not the branch:
 `gh run list --commit $(git rev-parse HEAD)`. A branch can be green while your
-newest commit has no run at all — that is precisely the case the gate exists
-for.
+newest commit has no run at all, and that is the case the gate exists for.
 
 ### It refuses because the tag already exists
 
