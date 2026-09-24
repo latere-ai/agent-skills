@@ -26,8 +26,28 @@ python3 scripts/validate.py
 python3 -m unittest discover -s tests -v
 ```
 
-The first command checks marketplace metadata and skill frontmatter. The test
-suite exercises Codex installation, repository portability, and public docs.
+The first command checks that the marketplace and each plugin manifest agree
+on name and version, and that every skill's frontmatter `name` matches its
+directory and carries a `description` of at least 40 characters. The test suite
+exercises the Codex installer, checks that skills do not assume one
+repository's files or commands, and checks the public docs: required community
+files, a guide per collection that names every skill in both harness forms,
+and links that resolve. CI runs both commands on every push to `main` and on
+every pull request.
+
+## Repository layout
+
+| Path | What it holds |
+| --- | --- |
+| `plugins/<collection>/skills/<skill>/SKILL.md` | The canonical skill. Claude Code loads it as written; the Codex installer adapts a copy. |
+| `plugins/<collection>/.claude-plugin/plugin.json` | The Claude Code plugin manifest for one collection. |
+| `plugins/<collection>/README.md` | The collection's reference: install, contract, and skill table. |
+| `.claude-plugin/marketplace.json` | The marketplace Claude Code adds with `/plugin marketplace add`. |
+| `scripts/install.py` | The Codex installer: namespaces each skill as `<collection>-<skill>`, rewrites `/collection:skill` to `$collection-skill`, and drops the Claude-only frontmatter fields `allowed-tools`, `argument-hint`, and `user-invocable`. |
+| `scripts/validate.py` | The manifest and frontmatter check. |
+| `docs/` | One task-oriented guide per collection. |
+| `tests/` | Installer, portability, and documentation tests. |
+| `specs/` | Design records for changes to the repository itself. |
 
 ## Skill design rules
 
@@ -59,16 +79,26 @@ Each skill lives at `plugins/<collection>/skills/<skill>/SKILL.md`.
 For a new skill:
 
 1. Create the directory and `SKILL.md`.
-2. Add YAML frontmatter with at least `name` and a routing-quality
-   `description`.
-3. Document the skill in the collection README and usage guide.
+2. Add YAML frontmatter with at least `name`, equal to the directory name, and
+   a routing-quality `description` of 40 characters or more.
+3. Document the skill in the collection README and in its usage guide under
+   `docs/`. The guide must name it in both forms, `/collection:skill` and
+   `$collection-skill`; a test fails otherwise.
 4. Add a test for new behavior or for the regression being fixed.
 5. Run both validation commands from Development setup.
 
-For a new collection, also add its Claude Code manifest under
-`plugins/<collection>/.claude-plugin/`, register it in
-`.claude-plugin/marketplace.json`, and add installation and usage guidance.
-The Codex installer discovers collections from the `plugins/` tree.
+For a new collection, also:
+
+1. Add its Claude Code manifest at
+   `plugins/<collection>/.claude-plugin/plugin.json`.
+2. Register it in `.claude-plugin/marketplace.json` with the same `name` and
+   `version` as the manifest.
+3. Write its usage guide under `docs/`, add the guide to `GUIDES` in
+   `tests/test_docs.py`, and list the collection and its guide in the
+   README's Collections table.
+
+The Codex installer discovers collections from the `plugins/` tree, so it
+needs no change.
 
 ## Test a Codex installation
 
@@ -107,21 +137,19 @@ Every sentence a skill emits or carries is written for one reader, and the
 register follows the reader:
 
 - User, a person or a coding harness: skill instructions (the harness that
-  runs a skill is the user), `validate.py` output, the README and public
-  docs. Short and plain: what happened and what to do next, naming a command
-  or a page, never a package, a function, a table, or a Kubernetes object.
-- Contributor, someone changing a skill: specs, this file, package
-  documentation, commit messages, source comments. Precise, in the project's
-  own terms, with the reason a design is what it is.
-- Developer, someone debugging a running system: test output and the
-  installer's failure messages. Exact and complete: object, operation,
-  observed value, expected value, and the underlying error.
+  runs a skill is the user), `validate.py` output, the README, the collection
+  READMEs, and the guides under `docs/`. Short and plain: what happened and
+  what to do next, naming a command or a page, never an internal function or
+  data structure.
+- Contributor, someone changing a skill: specs, this file, commit messages,
+  and source comments. Precise, in the project's own terms, with the reason a
+  design is what it is.
+- Developer, someone debugging the tooling: test output and the installer's
+  failure messages. Exact and complete: the file, the operation, the observed
+  value, the expected value, and the underlying error.
 
-An error has one code, one fixed user sentence in `message`, and one
-developer detail in a separate field shown only on request. The canonical
-statement, worked examples, and the review checklist are in the registers
-document in pkg:
-https://github.com/latere-ai/pkg/blob/main/docs/writing/registers.md
+The canonical statement of the rule, worked examples, and the review checklist
+are in the [registers document](https://github.com/latere-ai/pkg/blob/main/docs/writing/registers.md).
 The rule applies to new text and to reviews; existing text is fixed as it is
 touched.
 
