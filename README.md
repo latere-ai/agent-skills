@@ -28,8 +28,12 @@ session, cross package boundaries, or be reviewed by other people.
   before it can become complete.
 - **Keep your repository authoritative:** skills discover local instructions,
   commands, tests, and documentation conventions.
-- **Avoid harness lock-in:** canonical skill sources are adapted for Claude Code
-  and Codex during installation.
+- **Pause before outward steps:** `drive` stops for your approval before it
+  dispatches or archives work, and the release skill asks before it pushes a
+  tag. [What each skill changes](docs/spec-kit.md#what-each-skill-changes)
+  lists which spec skills only read, which commit, and which may push.
+- **Avoid harness lock-in:** each skill has one source. Claude Code loads it as
+  a plugin, and the Codex installer adapts it on the way in.
 
 ## Quick start
 
@@ -96,6 +100,24 @@ troubleshooting.
 
 Install a collection by name: `/plugin install ci@latere-ai` in Claude Code, or
 `python3 scripts/install.py codex ci` for Codex.
+
+## Update or remove
+
+**Claude Code:** `/plugin marketplace update latere-ai` refreshes the
+marketplace. `/plugin` opens the list of installed plugins, where a collection
+can be disabled or uninstalled.
+
+**Codex:** the installer never overwrites an installed skill, so an update is a
+removal followed by a fresh install. Delete the collection's directories from
+the skills directory, pull this repository, and run the installer again:
+
+```sh
+rm -rf "${CODEX_HOME:-$HOME/.codex}"/skills/spec-*
+git pull
+python3 scripts/install.py codex spec
+```
+
+Review any local edits you made to an installed skill before deleting it.
 
 ## Contributing
 
