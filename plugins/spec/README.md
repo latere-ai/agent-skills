@@ -86,25 +86,28 @@ The complete transition map and diagram are in
 
 ## Skill reference
 
-| Purpose | Claude Code | Codex | Writes files? |
+| Purpose | Claude Code | Codex | Changes |
 | --- | --- | --- | --- |
-| Create and index a new design | `/spec:create` | `$spec-create` | Yes |
-| Bring an outdated spec back to reality | `/spec:refine` | `$spec-refine` | Yes |
-| Check fields, paths, states, and graph structure | `/spec:validate` | `$spec-validate` | No |
-| Find code and spec blast radius | `/spec:impact` | `$spec-impact` | No |
-| Split a design into child designs or tasks | `/spec:breakdown` | `$spec-breakdown` | Yes |
-| Audit dependency order, size, gaps, and overlap | `/spec:review-breakdown` | `$spec-review-breakdown` | No |
-| Record build intent or create linked board tasks | `/spec:dispatch` | `$spec-dispatch` | Yes |
-| Implement a validated leaf with tests and docs | `/spec:implement` | `$spec-implement` | Yes |
-| Judge implementation against acceptance criteria | `/spec:review-impl` | `$spec-review-impl` | No |
-| Classify and record implementation divergence | `/spec:drift` | `$spec-drift` | Yes |
-| Write the Outcome and finish legal transitions | `/spec:wrapup` | `$spec-wrapup` | Yes |
-| Choose and run the next lifecycle step | `/spec:drive` | `$spec-drive` | Through other skills |
-| Report status and actionable work | `/spec:report` | `$spec-report` | No |
-| Repair one directory's numbering and index | `/spec:housekeeping` | `$spec-housekeeping` | Yes |
+| Create and index a new design | `/spec:create` | `$spec-create` | Writes, commits |
+| Bring an outdated spec back to reality | `/spec:refine` | `$spec-refine` | Writes |
+| Check fields, paths, states, and graph structure | `/spec:validate` | `$spec-validate` | None |
+| Find code and spec blast radius | `/spec:impact` | `$spec-impact` | None |
+| Split a design into child designs or tasks | `/spec:breakdown` | `$spec-breakdown` | Writes, commits |
+| Audit dependency order, size, gaps, and overlap | `/spec:review-breakdown` | `$spec-review-breakdown` | None |
+| Record build intent or create linked board tasks | `/spec:dispatch` | `$spec-dispatch` | Writes, commits |
+| Implement a validated leaf with tests and docs | `/spec:implement` | `$spec-implement` | Writes, commits |
+| Judge implementation against acceptance criteria | `/spec:review-impl` | `$spec-review-impl` | None |
+| Classify and record implementation divergence | `/spec:drift` | `$spec-drift` | Writes |
+| Write the Outcome and finish legal transitions | `/spec:wrapup` | `$spec-wrapup` | Writes, commits |
+| Choose and run the next lifecycle step | `/spec:drive` | `$spec-drive` | Through other skills, and commits status changes |
+| Report status and actionable work | `/spec:report` | `$spec-report` | None |
+| Repair one directory's numbering and index | `/spec:housekeeping` | `$spec-housekeeping` | Renames, commits, and pushes where the repository pushes to its main branch directly |
 
 Use `drive` when you know the target spec but not the next command. Use `report`
 when you need to understand the whole tree.
+
+Commits are local. No skill pushes unless you ask, except `housekeeping`, which
+follows a repository convention of pushing to its main branch directly.
 
 ## Repository discovery
 

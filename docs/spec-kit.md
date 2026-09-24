@@ -17,7 +17,8 @@ your repository's normal issue and test workflow may be enough.
 - Test and build commands documented in the repository or visible in CI.
 
 You do not need a task board, server, database, or project-management product.
-The default workflow only edits Markdown and code in your repository.
+The default workflow only edits Markdown and code in your repository and
+commits the result locally.
 
 ## Five-minute path
 
@@ -142,9 +143,9 @@ stateDiagram-v2
     archived --> drafted: resurrect
 ```
 
-The diagram shows the common delivery and recovery paths. The table below is
-the authoritative state reference; `archive` is also available from other
-non-terminal states when work is intentionally retired.
+The diagram shows the common delivery and recovery paths. The two tables below
+are the authoritative reference: what each state means, and every move the
+skills will make.
 
 | State | Meaning | Normal next move |
 | --- | --- | --- |
@@ -156,9 +157,20 @@ non-terminal states when work is intentionally retired.
 | `stale` | The spec no longer matches reality | Refine before relying on it |
 | `archived` | The work is retired | Resurrect only when the work becomes active again |
 
+| From | Legal next states |
+| --- | --- |
+| `vague` | `drafted`, `archived` |
+| `drafted` | `validated`, `stale`, `archived` |
+| `validated` | `testing`, `stale` |
+| `testing` | `complete`, `stale`, `archived` |
+| `complete` | `stale`, `archived` |
+| `stale` | `drafted`, `validated`, `archived` |
+| `archived` | `drafted` |
+
 There is no direct `validated -> complete` transition. The `testing` state is
 the evidence gate: implementation is compared with the design before the spec
-is allowed to claim completion.
+is allowed to claim completion. A `validated` spec cannot be archived directly
+either; it moves to `stale` first.
 
 ## Small changes
 
@@ -171,9 +183,10 @@ For a focused change that one agent can implement in one pass:
 4. Approve the implementation plan when prompted.
 5. Review the final Outcome section and commits.
 
-If you want explicit control, run `validate`, advance the spec to `validated`,
-then run `implement`. A full implementation delegates finalization to `wrapup`,
-which records drift and moves through the testing gate.
+If you want explicit control, run `validate`. When it reports no errors, set
+`status: validated` in the spec's frontmatter, then run `implement`. A full
+implementation delegates finalization to `wrapup`, which records drift and
+moves through the testing gate.
 
 ## Large changes
 
@@ -208,9 +221,10 @@ flags scope creep, checks test evidence, and returns a verdict.
 supports completion. Moderate drift belongs in the Outcome. Significant drift
 makes the spec stale so the document cannot silently misrepresent what shipped.
 
-`wrapup` is the finalizer. It verifies the repository's own test and build
-gates, runs drift analysis, writes one canonical Outcome section, updates the
-spec index, and follows legal lifecycle transitions.
+`wrapup` is the finalizer. It runs the repository's own full verification
+command, runs drift analysis, writes one canonical Outcome section, updates
+the spec index, follows legal lifecycle transitions, and commits the spec
+changes. It does not push.
 
 ## Working as a team
 
@@ -239,6 +253,28 @@ files when it is absent.
 Dispatching creates outward work, so `drive` pauses for human approval before
 using a task board. A dispatched task may finish asynchronously; run `drive` or
 `wrapup` again after it completes to record the result.
+
+## What each skill changes
+
+Every skill reads the repository before it acts. What it does afterwards falls
+into four groups:
+
+| Effect | Skills |
+| --- | --- |
+| Read only: reports and changes nothing | `validate`, `impact`, `review-breakdown`, `review-impl`, `report` |
+| Edits spec files and leaves the commit to you | `refine`, `drift` |
+| Edits and commits locally; pushes only when you ask | `create`, `breakdown`, `dispatch`, `implement`, `wrapup` |
+| Renames spec files with history and commits; pushes only when the repository's convention is to push to its main branch directly | `housekeeping` |
+
+`drive` runs the skills above and inherits their effects. Between them it
+moves the spec's `status` along a legal edge by editing the frontmatter and
+committing that change. It pauses for your approval before dispatching to a task
+board, archiving, marking a spec with dependents stale, or forcing a spec
+from `testing` to `complete` over the drift gate.
+
+Commits follow the repository's own message style. `housekeeping` works on the
+main branch only when the repository's history shows that is the convention;
+otherwise it branches first.
 
 ## Command reference
 
