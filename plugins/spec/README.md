@@ -94,7 +94,7 @@ The complete transition map and diagram are in
 | Find code and spec blast radius | `/spec:impact` | `$spec-impact` | None |
 | Split a design into child designs or tasks | `/spec:breakdown` | `$spec-breakdown` | Writes, commits |
 | Audit dependency order, size, gaps, and overlap | `/spec:review-breakdown` | `$spec-review-breakdown` | None |
-| Record build intent or create linked board tasks | `/spec:dispatch` | `$spec-dispatch` | Writes, commits |
+| Check build readiness or create linked board tasks | `/spec:dispatch` | `$spec-dispatch` | None without a task board; with one, the board writes and commits |
 | Implement a validated leaf with tests and docs | `/spec:implement` | `$spec-implement` | Writes, commits |
 | Judge implementation against acceptance criteria | `/spec:review-impl` | `$spec-review-impl` | None |
 | Classify and record implementation divergence | `/spec:drift` | `$spec-drift` | Writes |
@@ -123,9 +123,9 @@ make the workflow more reliable.
 
 ## Optional task-board integration
 
-Most repositories use file-based dispatch. The skill records build intent in
-the spec, commits the legal frontmatter transition, and leaves
-`dispatched_task_id: null`.
+Most repositories have no task board. There, `dispatch` checks that the spec
+is `validated` and its dependencies are complete, reports what to build and in
+what order, and changes no files.
 
 Repositories may expose an HTTP transition API for atomic task creation,
 dependency wiring, status changes, and drift handling. `dispatch` and `drive`
