@@ -152,10 +152,13 @@ Any `BROKEN` line must be fixed before you commit. Optionally run
 
 ## Step 7: Commit the numbering pass (atomic)
 
-One commit for renames + cross-reference fixes, README excluded:
+One commit for renames + cross-reference fixes, README excluded. `git mv`
+staged the renames but not later edits: stage by path each file you edited in
+Step 5, including a moved spec whose status you changed, and leave
+`specs/README.md` for the Step 9 commit:
 
 ```bash
-git add -A && git restore --staged specs/README.md
+git add <each file edited in Step 5, moved specs included, except specs/README.md>
 git commit -m "specs: number the N name-only specs into .archive/ (NNN-MMM)"
 ```
 
