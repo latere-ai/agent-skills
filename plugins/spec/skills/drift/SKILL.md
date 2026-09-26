@@ -119,7 +119,7 @@ which composes the one Outcome and sets status from the drift. Steps 7–8 below
 append a second one. Check whether the spec already has an `## Outcome`:
 - **None yet** — write the divergence-flavored Outcome below.
 - **Already present** (e.g. wrap-up finalized a direct-implement spec, or a prior
-  diff ran) — do not duplicate it. Merge your divergence findings into the
+  drift run did) — do not duplicate it. Merge your divergence findings into the
   existing section (add/refresh the Design Evolution / Not Implemented /
   Unspecified Work subsections) and leave its Summary/What-Shipped intact. The divergence analysis
   augments the finalizer's Outcome; it does not replace it.
@@ -180,7 +180,7 @@ Include test results in the Outcome section.
 Report to the user:
 
 ```
-## Spec Diff: <spec title>
+## Spec Drift: <spec title>
 
 Task: <task UUID>
 Commits: N commits, M files changed
