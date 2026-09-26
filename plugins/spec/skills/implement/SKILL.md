@@ -59,7 +59,8 @@ Break the spec into an ordered list of implementation tasks. For each task:
 - Note any test files needed
 - Note any doc files that need updating
 
-Present this plan to the user for approval (in Claude Code, through plan mode).
+Present this plan to the user for approval (through plan mode, where the harness
+has one).
 Group tasks into logical commits (small, focused). Order tasks so each commit
 leaves the project in a working state.
 
@@ -67,7 +68,7 @@ Wait for user approval before proceeding. The user may adjust scope, reorder
 items, or skip sections.
 
 **Autonomous mode (goal-driven / driven by `/spec:drive`):** plan-mode approval
-is an interactive gate — it *hangs* an unattended `/goal` loop. So when this skill
+waits for a human, so an unattended `/goal` loop stalls on it. So when this skill
 is invoked by `/spec:drive` under a goal, or with an explicit `auto` token in
 the arguments, the goal itself is the standing approval: **skip plan mode
 and the approval wait**, and go straight to Step 3. Stay conservative — keep

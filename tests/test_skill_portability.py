@@ -41,6 +41,18 @@ class SkillPortabilityTest(unittest.TestCase):
                 with self.subTest(skill=path.parent.name, phrase=phrase):
                     self.assertNotIn(phrase, text)
 
+    def test_skills_describe_harness_features_by_behavior(self) -> None:
+        """Claude Code and Codex both run `/goal`, but judge it differently.
+
+        Naming one harness's machinery tells the other harness's agent to wait
+        for an evaluator that never comes.
+        """
+        for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
+            text = path.read_text()
+            for phrase in ("Stop-hook evaluator", "goal evaluator"):
+                with self.subTest(skill=path.parent.name, phrase=phrase):
+                    self.assertNotIn(phrase, text)
+
     def test_skills_name_no_sibling_checkout(self) -> None:
         """Skill bodies ship to every user, so an example path must be generic.
 

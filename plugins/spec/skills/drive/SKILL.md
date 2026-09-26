@@ -12,10 +12,10 @@ one or more **legal** transitions at a time, reporting the new state at the end 
 every turn. This is the orchestrator: it reads reality, picks the next step, runs
 the right `/spec:*` sub-skill (or transition API call), and stops at gates.
 
-It is built to be **re-invoked**: under a `/goal` the Stop-hook evaluator re-runs
-you each turn with the remaining work, so each turn must (a) make concrete progress
-and (b) end by stating the spec's current `status` in your message, so the
-evaluator can judge whether the goal is met. Within a turn, carry the spec through
+It is built to be **re-invoked**: under a `/goal` loop the harness runs you again
+each turn with the remaining work, so each turn must (a) make concrete progress
+and (b) end by stating the spec's current `status` in your message, so whatever
+judges the goal can tell whether it is met. Within a turn, carry the spec through
 every legal, non-gated transition you can; end the turn at a gate, at the target,
 or when the next step waits on work outside this session.
 
@@ -119,7 +119,7 @@ you can in this turn (e.g. validate → implement → wrap-up is one turn for a 
 leaf); stop at the first gate, the target, or a step that waits on work outside
 this session, such as a dispatched board task.
 
-End every turn with a status line the goal evaluator can read, e.g.:
+End every turn with a status line that shows whether the goal is met, e.g.:
 
 ```
 Spec <path>: status <old> → <new>. Target: <target>. Next: <next step | GATE: <what> | DONE>.
@@ -127,11 +127,13 @@ Spec <path>: status <old> → <new>. Target: <target>. Next: <next step | GATE: 
 
 ## Running under a `/goal` (what is and isn't truly hands-off)
 
-A user sets, e.g., `/goal spec <path> reaches status complete`. Each turn the
-Stop-hook evaluator reads your transcript; if the spec is not yet at the target it
-re-invokes you with what remains. You don't manage the loop: you make and report
-progress each turn. The harness pauses the goal when the evaluator keeps finding
-it unmet, and clears it when met.
+A user sets, e.g., `/goal spec <path> reaches status complete`. After each turn
+the goal is judged; if the spec is not yet at the target, you run again with
+what remains. Harnesses judge it one of two ways: a separate evaluator reads
+your transcript, or you mark the goal yourself. Where the mark is yours, mark it
+complete only when the spec is at the target; stopping at a gate is not
+completion. Either way you don't run the loop: you make and report progress
+each turn, and the harness stops the loop when the goal keeps going unmet.
 
 Be honest about the reach of an **unattended** loop (no human watching):
 
@@ -140,17 +142,16 @@ Be honest about the reach of an **unattended** loop (no human watching):
   `wrap-up` through the `testing` gate. A small validated leaf can therefore go all
   the way to `complete` unattended.
 - **Stalls and needs a human** — every gate in Step 3 (dispatch to the board,
-  archive, `force-complete`, stale fan-out). The evaluator can't approve them and
-  can't run commands, so an unattended loop cannot pass them, and repeated unmet
-  checks pause the goal. When you reach a gate, **state it plainly and end the
+  archive, `force-complete`, stale fan-out). Nothing in the loop can approve
+  them, so an unattended loop cannot pass them, and the harness stops the goal
+  once it stays unmet. When you reach a gate, **state it plainly and end the
   turn**: report "GATE: <what> (needs you)", so when the user returns they can
   unblock with one message.
 - **Completes outside the loop** — a *dispatched* spec finishes asynchronously on
   the task board; the drift pipeline (server) renders its verdict on task-done.
-  The goal loop can't wait that out, and the evaluator can't observe the
-  task finishing. So a goal targeting a spec you dispatch will pause at the dispatch
-  gate; after the board task is done, re-run `/spec:drive` (or `/spec:wrapup`)
-  to pick up `testing → complete`.
+  The goal loop can't wait that out or see the task finish, so a goal targeting
+  a spec you dispatch will pause at the dispatch gate; after the board task is
+  done, re-run `/spec:drive` (or `/spec:wrapup`) to pick up `testing → complete`.
 
 Net: `/goal` + `/spec:drive` runs the in-session path to `complete` hands-off,
 and turns every outward/async step into a clearly-reported stop rather than a
@@ -164,6 +165,6 @@ silent hang. Don't claim more autonomy than that.
 - **Don't double-manage dispatched specs** — once a spec is dispatched, the server
   drives `validated → testing → complete/stale` on task-done. Don't hand-set its
   status; let the server, then run `/spec:wrapup` only to enrich the Outcome.
-- **End every turn with the status line** — the closing `status` line is the
-  contract with the goal evaluator; keep it accurate.
+- **End every turn with the status line** — the closing `status` line is what
+  the goal is judged on; keep it accurate.
 - **Respect the gates** — autonomy stops at outward/irreversible actions.
