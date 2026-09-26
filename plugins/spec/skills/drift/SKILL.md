@@ -6,10 +6,9 @@ argument-hint: <spec-file.md> [commit-range]
 
 # Spec-Implementation Drift
 
-Compare what a dispatched task actually built against what the spec asked for.
-This is the non-deterministic layer 2 of the task completion feedback loop —
-it goes beyond the mechanical status flip (layer 1) to assess whether the
-implementation truly satisfies the spec's intent.
+Compare what a dispatched task actually built against what the spec asked for,
+and judge whether the implementation satisfies the spec's intent, whatever
+status the spec already carries.
 
 ## Step 0: Parse arguments
 
@@ -207,8 +206,9 @@ Satisfaction: N/M items (X%)
 ## Guidelines
 
 - This skill bridges the gap between "task done" and "spec accurately complete."
-  The server-side hook (layer 1) marks the spec `complete` immediately. This
-  skill (layer 2) verifies that claim and corrects it if needed.
+  Where a task board runs, its task-done hook moves the spec through `testing`
+  to `complete` or `stale` (or to `complete` unconditionally when its drift
+  tester is disabled). This skill checks that verdict and corrects it if needed.
 - Be factual, not judgmental. Divergences aren't failures — implementations
   often improve on specs. Document what happened and why.
 - Preserve the spec's existing content. The Outcome section is additive.
