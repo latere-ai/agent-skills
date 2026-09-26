@@ -128,8 +128,9 @@ is `validated` and its dependencies are complete, reports what to build and in
 what order, and changes no files.
 
 Repositories may expose an HTTP transition API for atomic task creation,
-dependency wiring, status changes, and drift handling. `dispatch` and `drive`
-probe for that integration. If it is absent, they use the file-based path.
+dependency wiring, status changes, and drift handling. The skills use it only
+at an address the repository's instructions or docs name, or that you give;
+they never guess one. Without it, they use the file-based path.
 
 Task creation, cancellation, archival, broad stale propagation, and forced
 completion are human gates. The orchestrator pauses before taking those

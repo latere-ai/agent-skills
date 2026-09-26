@@ -66,7 +66,11 @@ For dispatch to a task board, build the task's `DependsOn` list:
 
 ## Step 4: Execute
 
-Dispatch has two implementations. Detect which applies before acting.
+Dispatch has two implementations. Detect which applies before acting: a task
+board is present only when the repository's instructions or docs (`AGENTS.md`,
+`CLAUDE.md`, `README.md`, or similar) name the address of its transition API,
+or the user gives one. Never guess a host or port. With no address, take the
+default path.
 
 ### Default: no task board
 
@@ -83,7 +87,7 @@ task with a pre-assigned UUID,
 resolves dependency edges, sets the spec `validated`, writes
 `dispatched_task_id`, and commits the frontmatter in one transaction (a
 folder/non-leaf path expands into its subtree leaves and promotes drafted
-ancestors to `validated`). Detect it by probing the API; when it answers, use it
+ancestors to `validated`). Probe the documented address; when it answers, use it
 and do not hand-roll task creation or edit frontmatter yourself.
 
 Dispatch:
@@ -139,7 +143,8 @@ Report to the user:
 
 - This skill is the bridge between designing and building. It should
   feel like a single action, not a multi-step process.
-- Never assume a task board exists. Probe for it; the no-board path is the
+- Never assume a task board exists, and never guess its address: probe only
+  one the repository documents or the user gives. The no-board path is the
   default, not the degraded mode.
 - Where the transition API is present, prefer it over hand-rolling: it creates
   the task, sets `validated` + `dispatched_task_id`, and commits in one

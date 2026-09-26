@@ -52,7 +52,8 @@ By default there is no server: advance the status by editing the spec's
 frontmatter along a legal edge and committing it, exactly as the other skills
 do.
 
-Where a transition API is present, prefer it because it is authoritative,
+Where a transition API is present (the repository's instructions or docs name
+its address, as `/spec:dispatch` describes), prefer it because it is authoritative,
 validates the edge, runs drift / stale
 fan-out, and commits: `POST /api/specs/transition` with
 `{ "action": "<action>", "path": "<workspace-relative spec path>" }`. Actions:

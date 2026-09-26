@@ -100,8 +100,8 @@ hand-write `complete` onto a `validated` spec. Always set `updated: <today>` and
 keep `dispatched_task_id` `null` for non-leaf specs.
 
 Drive the status by the path detected in Step 1, preferring the server transition
-API (it validates the edge and runs stale fan-out); fall back to legal-edge YAML
-only when the server is unreachable:
+API where the repository documents one (it validates the edge and runs stale
+fan-out); otherwise, or when it is unreachable, use legal-edge YAML:
 
 - **Dispatched path** — the **server already owns** `validated → testing →
   complete/stale` (the task-done drift pipeline; or, where that server runs its

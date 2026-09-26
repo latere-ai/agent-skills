@@ -97,6 +97,15 @@ class SkillPortabilityTest(unittest.TestCase):
         self.assertIn("it never changes a spec's `status`", skill)
         self.assertNotIn("flip", skill.lower())
 
+    def test_dispatch_probes_only_a_documented_board(self) -> None:
+        """The skill may run curl, so a guessed address is a request to anything.
+
+        A task board is used only at an address the repository or the user names.
+        """
+        skill = (ROOT / "plugins/spec/skills/dispatch/SKILL.md").read_text()
+
+        self.assertIn("Never guess a host or port.", skill)
+
 
 if __name__ == "__main__":
     unittest.main()

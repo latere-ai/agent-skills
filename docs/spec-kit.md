@@ -248,8 +248,9 @@ their history remains useful during later changes.
 The default path is file-based: without a board, `dispatch` checks that the
 spec is ready to build and changes no files. If the repository exposes the
 transition API described by the `dispatch` skill, `dispatch` can create linked
-tasks and update frontmatter atomically. The skill probes for this integration
-and falls back to files when it is absent.
+tasks and update frontmatter atomically. The skills use this integration only
+at an address the repository's instructions or docs name, or that you give,
+and never guess one; without it they use files.
 
 Dispatching creates outward work, so `drive` pauses for human approval before
 using a task board. A dispatched task may finish asynchronously; run `drive` or
