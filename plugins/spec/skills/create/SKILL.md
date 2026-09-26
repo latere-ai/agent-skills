@@ -69,8 +69,8 @@ Based on the description, identify which parts of the codebase are relevant:
 
 1. Determine which packages, files, and interfaces the spec will affect.
 2. Use Grep and Glob to find existing code, types, and patterns in those areas.
-3. Launch Agent subagents (Explore type) for up to 3 independent areas in
-   parallel if the spec spans multiple subsystems.
+3. If the spec spans several large, independent subsystems and the harness
+   offers subagents, you may explore up to 3 of them in parallel.
 4. Note existing patterns, interfaces, and constraints that the spec must
    account for.
 

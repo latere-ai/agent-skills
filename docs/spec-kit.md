@@ -245,10 +245,12 @@ their history remains useful during later changes.
 
 ## Optional task-board integration
 
-The default path is file-based. If the repository exposes the transition API
-described by the `dispatch` skill, `dispatch` can create linked tasks and update
-frontmatter atomically. The skill probes for this integration and falls back to
-files when it is absent.
+The default path is file-based: without a board, `dispatch` checks that the
+spec is ready to build and changes no files. If the repository exposes the
+transition API described by the `dispatch` skill, `dispatch` can create linked
+tasks and update frontmatter atomically. The skills use this integration only
+at an address the repository's instructions or docs name, or that you give,
+and never guess one; without it they use files.
 
 Dispatching creates outward work, so `drive` pauses for human approval before
 using a task board. A dispatched task may finish asynchronously; run `drive` or
@@ -257,13 +259,14 @@ using a task board. A dispatched task may finish asynchronously; run `drive` or
 ## What each skill changes
 
 Every skill reads the repository before it acts. What it does afterwards falls
-into four groups:
+into five groups:
 
 | Effect | Skills |
 | --- | --- |
 | Read only: reports and changes nothing | `validate`, `impact`, `review-breakdown`, `review-impl`, `report` |
 | Edits spec files and leaves the commit to you | `refine`, `drift` |
-| Edits and commits locally; pushes only when you ask | `create`, `breakdown`, `dispatch`, `implement`, `wrapup` |
+| Edits and commits locally; pushes only when you ask | `create`, `breakdown`, `implement`, `wrapup` |
+| Changes nothing without a task board; with one, the board creates the linked task and commits the frontmatter | `dispatch` |
 | Renames spec files with history and commits; pushes only when the repository's convention is to push to its main branch directly | `housekeeping` |
 
 `drive` runs the skills above and inherits their effects. Between them it

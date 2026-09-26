@@ -1,14 +1,15 @@
 ---
 name: dispatch
-description: Mark a validated spec ready to build and resolve its dependency wiring; where a task board with a transition API is present, create the linked task atomically. Also undispatches. Use when a design is settled and work should start — the spec must be validated and its dependencies complete.
+description: Check that a validated spec is ready to build and resolve its dependency wiring; where a task board with a transition API is present, create the linked task atomically. Also undispatches. Use when a design is settled and work should start — the spec must be validated and its dependencies complete.
 argument-hint: <spec-file.md> [undispatch]
 allowed-tools: Read, Grep, Glob, Edit, Agent, Bash(ls *), Bash(curl *)
 ---
 
-# Dispatch Spec to Task Board
+# Dispatch a Spec
 
-Send a validated spec to the board as a task, or undispatch a previously
-dispatched spec.
+Check that a validated spec is ready to build, or undispatch a previously
+dispatched spec. Where the repository runs a task board, dispatching also
+creates the linked task; without one, dispatch changes no files.
 
 ## Step 0: Parse arguments
 
@@ -29,7 +30,8 @@ $ARGUMENTS has the form: `<spec-file.md> [undispatch]`
 ### For dispatch:
 
 1. **Status check** — spec must be `validated`. If `drafted`, suggest
-   `/spec:validate` first. If `stale`, suggest `/spec:refine` first.
+   `/spec:validate` first, then moving the status to `validated`. If `stale`,
+   suggest `/spec:refine` first.
 2. **Already dispatched check** — if `dispatched_task_id` is non-null, warn the
    user and stop. They must undispatch first or confirm re-dispatch.
 3. **Dependency check** — for each path in `depends_on`, read that spec's
@@ -53,7 +55,7 @@ $ARGUMENTS has the form: `<spec-file.md> [undispatch]`
 
 ## Step 3: Resolve dependencies
 
-For dispatch, build the task's `DependsOn` list:
+For dispatch to a task board, build the task's `DependsOn` list:
 
 1. For each spec in `depends_on` that has a non-null `dispatched_task_id`, add
    that task UUID to `DependsOn`.
@@ -64,19 +66,19 @@ For dispatch, build the task's `DependsOn` list:
 
 ## Step 4: Execute
 
-Dispatch has two implementations. Detect which applies before acting.
+Dispatch has two implementations. Detect which applies before acting: a task
+board is present only when the repository's instructions or docs (`AGENTS.md`,
+`CLAUDE.md`, `README.md`, or similar) name the address of its transition API,
+or the user gives one. Never guess a host or port. With no address, take the
+default path.
 
-### Default: file-based dispatch
+### Default: no task board
 
-Most repos have no task board. Dispatching then means recording the intent in
-the spec itself:
-
-1. Set `status: validated` if it is not already.
-2. Leave `dispatched_task_id: null` — there is no task to point at.
-3. Set `updated` to today.
-4. Commit the frontmatter change.
-5. Report what would be built and in what order, so the user (or a following
-   `/spec:implement`) can pick it up.
+Most repos have no task board. Dispatch is then a readiness check that changes
+no files: Step 2 already confirmed the spec is `validated`, and
+`dispatched_task_id` stays `null` because there is no task to point at. Report
+what would be built and in what order, so the user (or a following
+`/spec:implement`) can pick it up.
 
 ### When a task board with a transition API is present
 
@@ -85,7 +87,7 @@ task with a pre-assigned UUID,
 resolves dependency edges, sets the spec `validated`, writes
 `dispatched_task_id`, and commits the frontmatter in one transaction (a
 folder/non-leaf path expands into its subtree leaves and promotes drafted
-ancestors to `validated`). Detect it by probing the API; when it answers, use it
+ancestors to `validated`). Probe the documented address; when it answers, use it
 and do not hand-roll task creation or edit frontmatter yourself.
 
 Dispatch:
@@ -121,7 +123,7 @@ can leave a dangling link.
 
 ## Step 5: Update spec file
 
-On the file-based path, the frontmatter edit from Step 4 is the whole of it.
+Without a task board there is nothing to update.
 
 With a transition API there is normally nothing to do — the server already wrote
 and committed `dispatched_task_id`, `status`, and `updated`. Only on the
@@ -134,17 +136,20 @@ Report to the user:
 - What was dispatched/undispatched and the task UUID
 - Dependency wiring: which task dependencies were resolved, which were skipped
 - Any warnings (unresolved dependencies, non-leaf dispatch, running task cancel)
-- Next steps: "Monitor on the task board" or "Dispatch dependencies first"
+- Next steps: "Monitor on the task board", "Run `/spec:implement`", or
+  "Dispatch dependencies first"
 
 ## Guidelines
 
 - This skill is the bridge between designing and building. It should
   feel like a single action, not a multi-step process.
-- Never assume a task board exists. Probe for it; the file-based path is the
+- Never assume a task board exists, and never guess its address: probe only
+  one the repository documents or the user gives. The no-board path is the
   default, not the degraded mode.
 - Where the transition API is present, prefer it over hand-rolling: it creates
   the task, sets `validated` + `dispatched_task_id`, and commits in one
   transaction.
 - For batch dispatch through the API, pass multiple specs in one `paths` array
   so the server wires dependencies and creates tasks together.
-- Commit the frontmatter change; do not push.
+- Commit only a frontmatter change you made yourself, on the task-endpoint
+  fallback; do not push.

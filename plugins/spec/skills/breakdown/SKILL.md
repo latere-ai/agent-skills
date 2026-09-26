@@ -53,8 +53,9 @@ For each major area the spec touches, explore the codebase to understand:
 - What test patterns exist in those packages
 - Whether any items are already partially implemented
 
-Use Agent subagents (Explore type) for thorough codebase exploration. Launch up
-to 3 in parallel for independent areas.
+Explore these yourself. Where the harness offers subagents and an area is
+large and independent of the others, you may hand it to one, at most 3 at a
+time.
 
 ## Step 3: Design the breakdown
 
