@@ -5,10 +5,11 @@ argument-hint: <spec-file.md> [undispatch]
 allowed-tools: Read, Grep, Glob, Edit, Agent, Bash(ls *), Bash(curl *)
 ---
 
-# Dispatch Spec to Task Board
+# Dispatch a Spec
 
-Send a validated spec to the board as a task, or undispatch a previously
-dispatched spec.
+Mark a validated spec ready to build, or undispatch a previously dispatched
+spec. Where the repository runs a task board, dispatching also creates the
+linked task.
 
 ## Step 0: Parse arguments
 
