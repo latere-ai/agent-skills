@@ -50,8 +50,9 @@ each item, note:
 ## Step 2: Audit each item against the codebase
 
 For every item in the spec, determine its current status by searching the
-codebase. Use Grep, Glob, and Read to find evidence. Launch Agent subagents
-in parallel for independent items to speed this up.
+codebase. Use Grep, Glob, and Read to find evidence. Where the harness offers
+subagents and the items are large and independent, you may audit up to 3 in
+parallel.
 
 Classify each item as one of:
 - **Done** — fully implemented and working. Evidence: code exists, tests pass,

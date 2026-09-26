@@ -51,8 +51,8 @@ $ARGUMENTS has the form: `<spec-file.md> [commit-range]`
    for full changes.
 4. Get commit messages: `git log <range> --oneline`.
 
-Use Agent subagents (Explore type) to parallelize diff analysis across
-independent packages if the change spans many files.
+If the change spans many files across independent packages and the harness
+offers subagents, you may split the diff analysis among up to 3 of them.
 
 ## Step 3: Classify each spec item
 
