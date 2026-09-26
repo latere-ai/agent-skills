@@ -86,6 +86,17 @@ class SkillPortabilityTest(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, skill)
 
+    def test_housekeeping_leaves_status_to_the_lifecycle_skills(self) -> None:
+        """A rename pass that rewrites status can make a move the lifecycle forbids.
+
+        `drafted -> complete` is not a legal edge, so a shipped spec still marked
+        `drafted` stays live and is reported for `/spec:wrapup` instead.
+        """
+        skill = (ROOT / "plugins/spec/skills/housekeeping/SKILL.md").read_text()
+
+        self.assertIn("it never changes a spec's `status`", skill)
+        self.assertNotIn("flip", skill.lower())
+
 
 if __name__ == "__main__":
     unittest.main()
