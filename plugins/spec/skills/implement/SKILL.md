@@ -176,8 +176,8 @@ close it). Instead:
 2. Append an `## Implementation notes` section capturing the running state, with
    tight bullets (omit a subsection only if genuinely empty):
    - **Status** — commit SHAs/PR, date, and that the spec is *partially* done.
-   - **What was done** — concrete changes that shipped, grouped by area
-     (backend / frontend / docs / tests), linking primary files or commits.
+   - **What was done** — concrete changes that shipped, grouped by area of
+     the repository, linking primary files or commits.
    - **What was not done** — spec items skipped/deferred/descoped, each with
      *why* (out of scope this pass, blocked by X, user deferred, found
      unnecessary) and whether a follow-up is expected.

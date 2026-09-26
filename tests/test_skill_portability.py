@@ -29,6 +29,10 @@ class SkillPortabilityTest(unittest.TestCase):
             "Status Quo section",
             # A board field that one task server removed.
             "`goal` = the title",
+            # One application's stack, taken for everyone's Outcome.
+            "frontend components/stores/libs",
+            "(backend / frontend",
+            "Phase 3, Phase 4",
         )
 
         for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
