@@ -75,18 +75,22 @@ The name-only list is the work. For each, read its frontmatter `status`.
 
 ## Step 2: Classify — terminal vs live
 
-Status vocab varies by repo; map onto two buckets:
+Status vocab varies by repo; map the status as written onto two buckets. This
+skill renames and moves files; it never changes a spec's `status`.
 
 - **Terminal** (archive it): `complete`, `shipped`, `implemented`, `superseded`,
-  `abandoned`, `archived`, `stale`, `deferred`. Also treat a `draft`/`drafted`
-  spec that carries an **Outcome** section (shipped-but-status-stale) as
-  terminal, and flip its status to `complete`, the lifecycle status for shipped
-  work, when you move it.
+  `abandoned`, `archived`, `deferred`.
 - **Live** (keep at the root, just give it a number if it lacks one): `vague`,
-  `drafted`/`draft` with no Outcome, `validated`, `testing`, `in-progress`.
+  `drafted`/`draft`, `validated`, `testing`, `stale`, `in-progress`. A `stale`
+  spec still needs `/spec:refine`, so it stays in the live graph.
 
-When a name-only spec's status is ambiguous, read the body tail for an
-`## Outcome` / "Done"/"shipped" signal before deciding. If still unclear, ask.
+A `drafted`/`draft` spec that carries an `## Outcome` section shipped without
+its status catching up. Keep it live like any other draft, and list it in the
+report so the user can set it to `validated` and close it out with
+`/spec:wrapup`.
+
+When a name-only spec has no status, or one in neither list, ask which bucket
+it belongs in.
 
 ## Step 3: Assign numbers
 
@@ -132,7 +136,6 @@ Then, in the same working set, fix every same-repo reference found in Step 4:
   pointed at the old location (use the repo's path convention — usually
   repo-root-relative `specs/.archive/NNN-name.md`).
 - README table rows and internal `docs/**` markdown links.
-- Flip any shipped-but-`draft` status to `complete`.
 
 Leave live-but-newly-numbered specs at the root: `git mv name.md NNN-name.md`.
 
@@ -152,10 +155,13 @@ Any `BROKEN` line must be fixed before you commit. Optionally run
 
 ## Step 7: Commit the numbering pass (atomic)
 
-One commit for renames + cross-reference fixes, README excluded:
+One commit for renames + cross-reference fixes, README excluded. `git mv`
+staged the renames but not later edits: stage by path each file you edited in
+Step 5, including a moved spec whose frontmatter you edited, and leave
+`specs/README.md` for the Step 9 commit:
 
 ```bash
-git add -A && git restore --staged specs/README.md
+git add <each file edited in Step 5, moved specs included, except specs/README.md>
 git commit -m "specs: number the N name-only specs into .archive/ (NNN-MMM)"
 ```
 
@@ -230,7 +236,9 @@ Push if the repo pushes to main directly (check convention).
 Tell the user: how many name-only specs were numbered and their new
 `NNN-name.md` targets; which were kept live at the root vs archived; every
 same-repo reference fixed; any **sibling-repo** listings left stale on purpose
-(with paths, so they can fix those repos); and whether the README was rebuilt.
+(with paths, so they can fix those repos); every spec still marked `drafted`
+that carries an `## Outcome`, for `/spec:wrapup`; and whether the README was
+rebuilt.
 
 ## Gotchas
 
@@ -240,8 +248,9 @@ same-repo reference fixed; any **sibling-repo** listings left stale on purpose
   workstream that spans several repositories often carries the same bare
   filename in each of them. Grep `../` before renaming; expect sibling READMEs
   to reference the old name and leave them alone.
-- **A `draft` status can be a lie.** A spec with an `## Outcome` section shipped;
-  treat it as terminal and correct the status on the way to `.archive/`.
+- **A `draft` status can be a lie.** A spec with an `## Outcome` section shipped,
+  but correcting its status is `/spec:wrapup`'s job, not a rename's. Leave it
+  live and report it.
 - **Never renumber.** Gaps in the sequence are fine and expected (folded/reverted
   specs). Only ever append at `max+1`.
 - **Don't delete institutional memory.** "Clean index" means one ordered table

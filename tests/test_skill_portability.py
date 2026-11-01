@@ -29,11 +29,27 @@ class SkillPortabilityTest(unittest.TestCase):
             "Status Quo section",
             # A board field that one task server removed.
             "`goal` = the title",
+            # One application's stack, taken for everyone's Outcome.
+            "frontend components/stores/libs",
+            "(backend / frontend",
+            "Phase 3, Phase 4",
         )
 
         for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
             text = path.read_text()
             for phrase in forbidden:
+                with self.subTest(skill=path.parent.name, phrase=phrase):
+                    self.assertNotIn(phrase, text)
+
+    def test_skills_describe_harness_features_by_behavior(self) -> None:
+        """Claude Code and Codex both run `/goal`, but judge it differently.
+
+        Naming one harness's machinery tells the other harness's agent to wait
+        for an evaluator that never comes.
+        """
+        for path in (ROOT / "plugins").glob("*/skills/*/SKILL.md"):
+            text = path.read_text()
+            for phrase in ("Stop-hook evaluator", "goal evaluator"):
                 with self.subTest(skill=path.parent.name, phrase=phrase):
                     self.assertNotIn(phrase, text)
 
@@ -81,6 +97,26 @@ class SkillPortabilityTest(unittest.TestCase):
         ):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, skill)
+
+    def test_housekeeping_leaves_status_to_the_lifecycle_skills(self) -> None:
+        """A rename pass that rewrites status can make a move the lifecycle forbids.
+
+        `drafted -> complete` is not a legal edge, so a shipped spec still marked
+        `drafted` stays live and is reported for `/spec:wrapup` instead.
+        """
+        skill = (ROOT / "plugins/spec/skills/housekeeping/SKILL.md").read_text()
+
+        self.assertIn("it never changes a spec's `status`", skill)
+        self.assertNotIn("flip", skill.lower())
+
+    def test_dispatch_probes_only_a_documented_board(self) -> None:
+        """The skill may run curl, so a guessed address is a request to anything.
+
+        A task board is used only at an address the repository or the user names.
+        """
+        skill = (ROOT / "plugins/spec/skills/dispatch/SKILL.md").read_text()
+
+        self.assertIn("Never guess a host or port.", skill)
 
 
 if __name__ == "__main__":

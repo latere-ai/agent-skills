@@ -59,7 +59,8 @@ Break the spec into an ordered list of implementation tasks. For each task:
 - Note any test files needed
 - Note any doc files that need updating
 
-Present this plan to the user for approval (in Claude Code, through plan mode).
+Present this plan to the user for approval (through plan mode, where the harness
+has one).
 Group tasks into logical commits (small, focused). Order tasks so each commit
 leaves the project in a working state.
 
@@ -67,7 +68,7 @@ Wait for user approval before proceeding. The user may adjust scope, reorder
 items, or skip sections.
 
 **Autonomous mode (goal-driven / driven by `/spec:drive`):** plan-mode approval
-is an interactive gate — it *hangs* an unattended `/goal` loop. So when this skill
+waits for a human, so an unattended `/goal` loop stalls on it. So when this skill
 is invoked by `/spec:drive` under a goal, or with an explicit `auto` token in
 the arguments, the goal itself is the standing approval: **skip plan mode
 and the approval wait**, and go straight to Step 3. Stay conservative — keep
@@ -176,8 +177,8 @@ close it). Instead:
 2. Append an `## Implementation notes` section capturing the running state, with
    tight bullets (omit a subsection only if genuinely empty):
    - **Status** — commit SHAs/PR, date, and that the spec is *partially* done.
-   - **What was done** — concrete changes that shipped, grouped by area
-     (backend / frontend / docs / tests), linking primary files or commits.
+   - **What was done** — concrete changes that shipped, grouped by area of
+     the repository, linking primary files or commits.
    - **What was not done** — spec items skipped/deferred/descoped, each with
      *why* (out of scope this pass, blocked by X, user deferred, found
      unnecessary) and whether a follow-up is expected.

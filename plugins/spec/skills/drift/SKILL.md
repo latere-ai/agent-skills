@@ -6,10 +6,9 @@ argument-hint: <spec-file.md> [commit-range]
 
 # Spec-Implementation Drift
 
-Compare what a dispatched task actually built against what the spec asked for.
-This is the non-deterministic layer 2 of the task completion feedback loop —
-it goes beyond the mechanical status flip (layer 1) to assess whether the
-implementation truly satisfies the spec's intent.
+Compare what a dispatched task actually built against what the spec asked for,
+and judge whether the implementation satisfies the spec's intent, whatever
+status the spec already carries.
 
 ## Step 0: Parse arguments
 
@@ -46,14 +45,14 @@ $ARGUMENTS has the form: `<spec-file.md> [commit-range]`
 1. If a commit range was provided, use it directly.
 2. Otherwise, infer the range: find commits associated with the dispatched task.
    Look for the task UUID in commit messages, or use the task's worktree diff
-   via `GET /api/tasks/{id}/diff` where a task board exposes one; otherwise
+   via `GET /api/tasks/{id}/diff` where a documented task board exposes one; otherwise
    from git history over the spec's `affects` paths.
 3. Get the diff: `git diff <range> --stat` for file list, `git diff <range>`
    for full changes.
 4. Get commit messages: `git log <range> --oneline`.
 
-Use Agent subagents (Explore type) to parallelize diff analysis across
-independent packages if the change spans many files.
+If the change spans many files across independent packages and the harness
+offers subagents, you may split the diff analysis among up to 3 of them.
 
 ## Step 3: Classify each spec item
 
@@ -120,7 +119,7 @@ which composes the one Outcome and sets status from the drift. Steps 7–8 below
 append a second one. Check whether the spec already has an `## Outcome`:
 - **None yet** — write the divergence-flavored Outcome below.
 - **Already present** (e.g. wrap-up finalized a direct-implement spec, or a prior
-  diff ran) — do not duplicate it. Merge your divergence findings into the
+  drift run did) — do not duplicate it. Merge your divergence findings into the
   existing section (add/refresh the Design Evolution / Not Implemented /
   Unspecified Work subsections) and leave its Summary/What-Shipped intact. The divergence analysis
   augments the finalizer's Outcome; it does not replace it.
@@ -149,7 +148,7 @@ When writing a fresh Outcome standalone, append it before any "Future Work" or
 
 Update the spec's status — honoring the lifecycle gate (`validated → complete` is
 illegal; `complete` is reached only through `testing`) and the hybrid rule (prefer
-a transition API where the repo has one, since it validates the edge; otherwise
+a transition API where the repository documents one, since it validates the edge; otherwise
 a legal-edge frontmatter edit). A dispatched task reaching `done` means the **server** already moved the
 spec along `validated → testing → complete/stale`, so usually you are only
 recording the verdict, not setting the status:
@@ -181,7 +180,7 @@ Include test results in the Outcome section.
 Report to the user:
 
 ```
-## Spec Diff: <spec title>
+## Spec Drift: <spec title>
 
 Task: <task UUID>
 Commits: N commits, M files changed
@@ -207,8 +206,9 @@ Satisfaction: N/M items (X%)
 ## Guidelines
 
 - This skill bridges the gap between "task done" and "spec accurately complete."
-  The server-side hook (layer 1) marks the spec `complete` immediately. This
-  skill (layer 2) verifies that claim and corrects it if needed.
+  Where a task board runs, its task-done hook moves the spec through `testing`
+  to `complete` or `stale` (or to `complete` unconditionally when its drift
+  tester is disabled). This skill checks that verdict and corrects it if needed.
 - Be factual, not judgmental. Divergences aren't failures — implementations
   often improve on specs. Document what happened and why.
 - Preserve the spec's existing content. The Outcome section is additive.

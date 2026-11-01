@@ -42,8 +42,8 @@ For each file, type, or function the spec plans to modify:
      updates.
    - **Test** — test file that exercises affected code; may need updates.
 
-Use Agent subagents (Explore type) for parallel searches across independent
-packages. Launch up to 3 concurrently.
+Run these searches yourself. Where the harness offers subagents and the
+packages are large and independent, you may run up to 3 searches in parallel.
 
 ## Step 3: Check interface stability
 

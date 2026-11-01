@@ -72,9 +72,9 @@ here, and `/spec:drift` supplies the analysis consumed in 2a. It contains:
 1. **Summary** — 2-3 sentences: what shipped, dispatched vs implemented directly,
    commit SHAs (or PR link), and the **drift / satisfaction line** from 2a
    (e.g. "Drift: Minimal — N/M items satisfied (X%)").
-2. **What Shipped** — key deliverables: API endpoints and location (or "no new
-   endpoints" if reusing routes), frontend components/stores/libs and approximate
-   size, number of tests (backend + frontend) and coverage, key features.
+2. **What Shipped** — key deliverables in the repository's own terms (public
+   interfaces, user-visible behavior, and the files that carry them), the tests
+   added, and coverage where the repository measures it.
 3. **Design Evolution** — the **Diverged** and **Superseded** items from 2a:
    what the spec said vs. what was built, why, and the commit. If a deviation
    made the spec body wrong, fix the body inline too.
@@ -100,8 +100,8 @@ hand-write `complete` onto a `validated` spec. Always set `updated: <today>` and
 keep `dispatched_task_id` `null` for non-leaf specs.
 
 Drive the status by the path detected in Step 1, preferring the server transition
-API (it validates the edge and runs stale fan-out); fall back to legal-edge YAML
-only when the server is unreachable:
+API where the repository documents one (it validates the edge and runs stale
+fan-out); otherwise, or when it is unreachable, use legal-edge YAML:
 
 - **Dispatched path** — the **server already owns** `validated → testing →
   complete/stale` (the task-done drift pipeline; or, where that server runs its
@@ -169,6 +169,6 @@ Tell the user:
 
 - **Read before writing** — read the spec and all task files before making changes.
 - **Preserve UX design** — the spec may contain detailed UX descriptions, wireframes, and user interaction flows. These are valuable documentation even after implementation. Do not remove or summarize them.
-- **Preserve future work** — Phase 3, Phase 4, and "Future Work" sections describe planned extensions. Keep them intact.
+- **Preserve future work** — sections that describe planned extensions (later phases, "Future Work") stay intact.
 - **Match the style** of other completed specs in the repo (specs with `status: complete` and an `## Outcome` section).
 - **Be factual** — the Outcome and Design Evolution sections should document what actually happened, not what was planned. Read task implementation notes for accuracy.
